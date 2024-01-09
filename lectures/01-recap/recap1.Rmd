@@ -27,7 +27,7 @@ layout: true
 options(htmltools.dir.version = FALSE)
 library(pacman)
 devtools::install_github("hadley/emo")
-p_load(broom, latex2exp, ggplot2, ggthemes, viridis, dplyr, magrittr, knitr, parallel)
+p_load(broom, latex2exp, ggplot2, ggthemes, viridis, dplyr, magrittr, knitr, parallel, imager)
 # Define pink color
 scpo_red <- "#d90502"
 # Knitr options
@@ -289,9 +289,13 @@ layout: true
 
 
 ```{R, gen dataset, include = F, cache = T}
+# Check number of cores
+n.cores <- detectCores()
 # Set population and sample sizes
 n_p <- 100
 n_s <- 30
+#Create list to store results
+x.list <- sapply(1:1e4, list)
 # Set the seed
 set.seed(12468)
 # Generate data
@@ -311,11 +315,16 @@ lm0 <- lm(y ~ x, data = pop_df)
 lm1 <- lm(y ~ x, data = filter(pop_df, s1 == T))
 lm2 <- lm(y ~ x, data = filter(pop_df, s2 == T))
 lm3 <- lm(y ~ x, data = filter(pop_df, s3 == T))
+# Create Cluster
+clust <- makeCluster(n.cores)
+clusterExport(clust, c("pop_df", "n_s"))
+clusterEvalQ(clust, c({library("tidyverse")}, {library("broom")}))
 # Simulation
 set.seed(12468)
-sim_df <- mclapply(mc.cores = 10, X = 1:1e4, FUN = function(x, size = n_s) {
+sim_df <- parLapply(clust, x.list, fun = function(x, size = n_s) {
   lm(y ~ x, data = pop_df %>% sample_n(size = size)) %>% tidy()
 }) %>% do.call(rbind, .) %>% as_tibble()
+stopCluster(clust)
 ```
 
 .pull-left[
@@ -519,38 +528,45 @@ Let's repeat this **10,000 times**.
 ---
 count: false
 
-```{R, simulation scatter, echo = F, dev = "png", dpi = 300, cache = T,eval = T}
+```{R, simulation scatter, echo = F, dev = "png", dpi = 300, cache = F,eval = T}
 # Reshape sim_df
 line_df <- tibble(
   intercept = sim_df %>% filter(term != "x") %>% select(estimate) %>% unlist(),
   slope = sim_df %>% filter(term == "x") %>% select(estimate) %>% unlist()
 )
-ggplot() +
-geom_abline(data = line_df, aes(intercept = intercept, slope = slope), alpha = 0.01) +
-geom_point(data = pop_df, aes(x = x, y = y), size = 3, color = "darkslategray") +
-geom_abline(
-  intercept = lm0$coefficients[1], slope = lm0$coefficients[2],
-  color = scpo_red, size = 1.5
-) +
-theme_empty
+# ggplot() +
+# geom_abline(data = line_df, aes(intercept = intercept, slope = slope), alpha = 0.01) +
+# geom_point(data = pop_df, aes(x = x, y = y), size = 3, color = "darkslategray") +
+# geom_abline(
+#   intercept = lm0$coefficients[1], slope = lm0$coefficients[2],
+#   color = scpo_red, size = 1.5
+# ) +
+# theme_bw()
 ```
 
+```{R, simulation scatter import, echo = F, dev = "png", dpi = 50, out.width = "800px", cache = F,eval = T}
+knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/01-recap/recap1_files/figure-html/simul_scater.png")
+```
 ---
 # Population *vs.* sample
 
 **Question:** Why do we care about *population vs. sample*?
 
 .pull-left[
-```{R, simulation scatter2, echo = F, dev = "png", dpi = 300, cache = T}
+```{R, simulation scatter2, echo = F, dev = "png", dpi = 300, cache = F,eval = T}
 # Reshape sim_df
-ggplot() +
-geom_abline(data = line_df, aes(intercept = intercept, slope = slope), alpha = 0.01, size = 1) +
-geom_point(data = pop_df, aes(x = x, y = y), size = 6, color = "darkslategray") +
-geom_abline(
-  intercept = lm0$coefficients[1], slope = lm0$coefficients[2],
-  color = scpo_red, size = 3
-) +
-theme_empty
+# ggplot() +
+# geom_abline(data = line_df, aes(intercept = intercept, slope = slope), alpha = 0.01, size = 1) +
+# geom_point(data = pop_df, aes(x = x, y = y), size = 6, color = "darkslategray") +
+# geom_abline(
+#   intercept = lm0$coefficients[1], slope = lm0$coefficients[2],
+#   color = scpo_red, size = 3
+# ) +
+# theme_empty
+```
+
+```{R, simulation scatter2 import, echo = F, dev = "png", dpi = 50, out.width = "450px", cache = F,eval = T}
+knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/01-recap/recap1_files/figure-html/simul_scater.png")
 ```
 ]
 

@@ -25,10 +25,18 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
+.title[
 # ScPoEconometrics: Advanced
+]
+.subtitle[
 ## Intro and Recap 1
+]
+.author[
 ### Florian Oswald
-### SciencesPo Paris </br> 2021-02-01
+]
+.date[
+### SciencesPo Paris </br> 2024-01-09
+]
 
 ---
 
@@ -388,15 +396,18 @@ Let's repeat this **10,000 times**.
 ---
 count: false
 
-&lt;img src="recap1_files/figure-html/simulation scatter-1.png" style="display: block; margin: auto;" /&gt;
 
+
+&lt;img src="recap1_files/figure-html/simul_scater.png" width="800px" style="display: block; margin: auto;" /&gt;
 ---
 # Population *vs.* sample
 
 **Question:** Why do we care about *population vs. sample*?
 
 .pull-left[
-&lt;img src="recap1_files/figure-html/simulation scatter2-1.png" style="display: block; margin: auto;" /&gt;
+
+
+&lt;img src="recap1_files/figure-html/simul_scater.png" width="450px" style="display: block; margin: auto;" /&gt;
 ]
 
 .pull-right[
@@ -894,6 +905,19 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
 (function() {
   "use strict"
   // Replace <script> tags in slides area to make them executable
