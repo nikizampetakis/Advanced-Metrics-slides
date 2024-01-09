@@ -1,7 +1,7 @@
 ---
 title: "ScPoEconometrics: Advanced"
 subtitle: "Intro and Recap 1"
-author: "Nikiforos Zampetakis based on slides from Florian Oswald"
+author: "Nikiforos Zampetakis based on Florian Oswald's slides"
 date: "SciencesPo Paris </br> `r Sys.Date()`"
 output:
   xaringan::moon_reader:
