@@ -1,7 +1,7 @@
 ---
 title: "ScPoEconometrics: Advanced"
 subtitle: "Intro and Recap 1"
-author: "Florian Oswald"
+author: "Nikiforos Zampetakis based on slides from Florian Oswald"
 date: "SciencesPo Paris </br> `r Sys.Date()`"
 output:
   xaringan::moon_reader:
@@ -75,10 +75,6 @@ longeval = FALSE
 
 ## Today
 
-1. Communication: Slack Intro
-
-2. Zoom: How to use
-
 3. Who Am I
 
 4. This Course 
@@ -104,24 +100,21 @@ longeval = FALSE
 # Who Am I
 
 .pull-left[
-* I'm an Assistant Prof in the Dept of Economics at SciencesPo Paris. Check out my [website](https://floswald.github.io)!
+* I'm a PhD student in the Dept of Economics at SciencesPo Paris.
 
-* I work on housing, urban, macro and labor topics:
-    1. How to explain long run house price increase and city growth?
-    2. How is fertility related to housing costs?
-    3. What is the impact of Airbnb on long term rental markets?
-    4. How do people decide to move from one place to another and what are the implications for labor and housing markets?
+* I work on Empirical Industrial Organization and Antitrust Economics:
+    1. How producers' cartels work?
+    2. How the bargaining between producers and retailers affect the contracts they sign?
+    3. Does product varieties lead to higher markups?
+    4. How firms' productivity is affected by industrial policies?
     
 ]
 
 .pull-right[
     
-* I do a lot of computation (who doesn't). I like `R` (surprise!) and [`julia`](https://julialang.org) - I teach computational econ to our PhD students.
+* I I combine theoretical models, *data and econometrics* to try answer these questions.
 
-* I profited *a lot* from the open source software (OSS) community (and some good friends), and I am fascinated by how it works and the huge value it creates for everyone. 
-    * OSS is key to reproducible research. 
-    * I try to use and teach my students tools which enable greater reproducibility.
-    * *my students* 👆 concerns **you**!
+* For the empirical part of my work I mostly use `R`.
 
 ]
 
