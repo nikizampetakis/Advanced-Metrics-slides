@@ -26,6 +26,7 @@ layout: true
 ```{r setup, include=FALSE,warning=FALSE,message=FALSE}
 options(htmltools.dir.version = FALSE)
 library(pacman)
+devtools::install_github("hadley/emo")
 p_load(broom, latex2exp, ggplot2, ggthemes, viridis, dplyr, magrittr, knitr, parallel)
 # Define pink color
 scpo_red <- "#d90502"
