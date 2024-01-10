@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ScPoEconometrics: Advanced</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Nikiforos Zampetakis based on Florian Oswald’s slides" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/5235085b15.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-41584331-6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-41584331-6');
+    </script>
+
+    <link rel="stylesheet" href="scpo.css" type="text/css" />
+    <link rel="stylesheet" href="scpo-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# ScPoEconometrics: Advanced
+]
+.subtitle[
+## Intro and Recap 1
+]
+.author[
+### Nikiforos Zampetakis based on Florian Oswald’s slides
+]
+.date[
+### SciencesPo Paris </br> 2024-01-10
+]
+
+---
+
+
+
+
+
+layout: true
+  
+&lt;div class="my-footer"&gt;&lt;img src="./img/logo/ScPo-shield.png" style="height: 60px;"/&gt;&lt;/div&gt; 
+
+---
+
+# Welcome to *ScPoEconometrics: Advanced*!
+
+.pull-left[
+
+## Today
+
+3. Who Am I
+
+4. This Course 
+
+5. Recap 1 of topics from intro course
+
+]
+
+.pull-right[
+
+ 
+### Next time
+ 
+* Quiz 1 (before next time)
+ 
+* Recap 2 
+
+ 
+]
+---
+
+# Who Am I
+
+.pull-left[
+* I'm a PhD student in the Dept of Economics at SciencesPo Paris.
+
+* I work on Empirical Industrial Organization and Antitrust Economics:
+    1. How producers' cartels work?
+    
+    2. How the bargaining between producers and retailers affect the contracts they sign?
+    
+    3. Does product varieties lead to higher markups?
+    
+    4. How firms' productivity is affected by industrial policies?
+    
+]
+
+.pull-right[
+    
+* I combine theoretical models, *data and econometrics* to try answer these questions.
+
+* For the empirical part of my work I mostly use `R`.
+
+]
+
+---
+
+# This Course
+
+## Prerequisites
+
+* This course is the *follow-up* to [Introduction to Econometrics with R](https://github.com/ScPoEcon/ScPoEconometrics-Slides) which we teach to 2nd years.
+
+* You are supposed to be familiar with all the econometrics material from [the slides](https://github.com/ScPoEcon/ScPoEconometrics-Slides) of that course and/or chapters 1-9 in our [textbook](https://scpoecon.github.io/ScPoEconometrics/).
+
+* We also assume you have basic `R` working knowledge at the level of the intro course! ()
+    * basic `data.frame` manipulation with `dplyr`
+    * simple linear models with `lm`
+    * basic plotting with `ggplot2`
+    * Quiz 1 will try and test for that, so be on top of [this chapter](https://r4ds.had.co.nz/transform.html)
+
+---
+
+# This Course
+
+
+.pull-left[
+
+## Grading
+
+1. There will be ***four quizzes*** on Moodle roughly every two weeks =&gt; 40%
+
+1. There will be ***two take home exams / case studies*** =&gt; 60%
+
+1. There will be ***_no_*** final exam.
+]
+
+--
+
+.pull-right[
+
+## Course Materials
+
+1. [Book](https://scpoecon.github.io/ScPoEconometrics/) chapter 10 onwards
+
+1. The [Slides](https://github.com/ScPoEcon/Advanced-Metrics-slides)
+
+1. The interactive [shiny apps](https://github.com/ScPoEcon/ScPoApps)
+
+1. Quizzes on [Moodle](https://moodle.sciences-po.fr)
+
+]
+
+---
+
+# Syllabus
+
+.pull-left[
+
+1. Intro, Recap 1
+    (*Quiz 1*)
+
+2. Recap 2
+    (*Quiz 2*)
+    
+3. Tools: `Rmarkdown` and `data.table`
+
+4. Instrumental Variables 1
+    (*Quiz 3*)
+
+5. Instrumental Variables 2
+    (*Midterm exam*)
+]
+
+.pull-right[
+6\. Panel Data 1
+
+7\. Panel Data 2
+    (*quiz 4*)
+
+8\. Discrete Outcomes
+
+9\. Intro to Machine Learning 1
+
+10\. Intro to Machine Learning 2 
+
+11\. Recap / Buffer
+      (*Final Project*)
+
+12\. Recap / Buffer
+      (*Final Project*)
+]
+
+---
+class: separator, middle
+
+# Recap 1
+
+Let's get cracking!
+
+---
+
+# Population *vs.* sample
+
+## Models and notation
+
+We write our (simple) population model
+
+$$ y_i = \beta_0 + \beta_1 x_i + u_i $$
+
+and our sample-based estimated regression model as
+
+$$ y_i = \hat{\beta}_0 + \hat{\beta}_1 x_i + e_i $$
+
+An estimated regression model produces estimates for each observation:
+
+$$ \hat{y}_i = \hat{\beta}_0 + \hat{\beta}_1 x_i $$
+
+which gives us the _best-fit_ line through our dataset. 
+
+(A lot of this set slides - in particular: pictures! - have been taken from [Ed Rubin's](https://edrub.in/index.html) outstanding material. Thanks Ed 🙏)
+
+---
+
+
+# Task 1: Run Simple OLS (4 minutes)
+ 
+1. Load data [here](https://www.dropbox.com/s/wwp2cs9f0dubmhr/grade5.dta?dl=1). in `dta` format. (Hint: use `haven::read_dta("filename")` to read this format.)
+
+1. Obtain common summary statistics for the variables `classize`, `avgmath` and `avgverb`. Hint: use the `skimr` package.
+
+1. Estimate the linear model
+    `$$\text{avgmath}_i = \beta_0 + \text{classize}_i x_i + u_i$$`
+
+
+---
+
+# Task 1: Solution
+
+1. Load the data 
+    
+    ```r
+    grades = haven::read_dta(file ="https://www.dropbox.com/s/wwp2cs9f0dubmhr/grade5.dta?dl=1")
+    ```
+1. Describe the dataset:
+    
+    ```r
+    library(dplyr)
+    grades %&gt;% 
+      select(classize,avgmath,avgverb) %&gt;%
+      skimr::skim()
+    ```
+1. Run OLS to estimate the relationship between class size and student achievement? 
+    
+    ```r
+    summary(lm(formula = avgmath ~ classize, data = grades))
+    ```
+
+---
+layout: true
+
+# **Question:** Why do we care about *population vs. sample*?
+
+
+---
+
+
+
+
+.pull-left[
+
+&lt;img src="recap1_niki_files/figure-html/pop1-1.svg" style="display: block; margin: auto;" /&gt;
+
+.center[**Population**]
+
+]
+
+--
+
+.pull-right[
+
+&lt;img src="recap1_niki_files/figure-html/scatter1-1.svg" style="display: block; margin: auto;" /&gt;
+
+.center[**Population relationship**]
+
+$$ y_i = 2.53 + 0.57 x_i + u_i $$
+
+$$ y_i = \beta_0 + \beta_1 x_i + u_i $$
+
+
+]
+
+---
+
+.pull-left[
+
+&lt;img src="recap1_niki_files/figure-html/sample1-1.svg" style="display: block; margin: auto;" /&gt;
+
+.center[**Sample 1:** 30 random individuals]
+
+]
+
+--
+
+.pull-right[
+
+&lt;img src="recap1_niki_files/figure-html/sample1 scatter-1.svg" style="display: block; margin: auto;" /&gt;
+
+.center[
+
+**Population relationship**
+&lt;br&gt;
+`\(y_i = 2.53 + 0.57 x_i + u_i\)`
+
+**Sample relationship**
+&lt;br&gt;
+`\(\hat{y}_i = 2.36 + 0.61 x_i\)`
+
+]
+
+]
+
+---
+count: false
+
+.pull-left[
+
+&lt;img src="recap1_niki_files/figure-html/sample2-1.svg" style="display: block; margin: auto;" /&gt;
+
+.center[**Sample 2:** 30 random individuals]
+
+]
+
+.pull-right[
+
+&lt;img src="recap1_niki_files/figure-html/sample2 scatter-1.svg" style="display: block; margin: auto;" /&gt;
+
+.center[
+
+**Population relationship**
+&lt;br&gt;
+`\(y_i = 2.53 + 0.57 x_i + u_i\)`
+
+**Sample relationship**
+&lt;br&gt;
+`\(\hat{y}_i = 2.79 + 0.56 x_i\)`
+
+]
+
+]
+---
+count: false
+
+.pull-left[
+
+&lt;img src="recap1_niki_files/figure-html/sample3-1.svg" style="display: block; margin: auto;" /&gt;
+
+.center[**Sample 3:** 30 random individuals]
+
+]
+
+.pull-right[
+
+&lt;img src="recap1_niki_files/figure-html/sample3 scatter-1.svg" style="display: block; margin: auto;" /&gt;
+
+.center[
+
+**Population relationship**
+&lt;br&gt;
+`\(y_i = 2.53 + 0.57 x_i + u_i\)`
+
+**Sample relationship**
+&lt;br&gt;
+`\(\hat{y}_i = 3.21 + 0.45 x_i\)`
+
+]
+
+]
+
+
+---
+layout: false
+class: clear, middle
+
+Let's repeat this **10,000 times**.
+
+(This exercise is called a (Monte Carlo) simulation.)
+
+
+---
+count: false
+
+
+
+&lt;img src="recap1_files/figure-html/simul_scater.png" width="800px" style="display: block; margin: auto;" /&gt;
+---
+# Population *vs.* sample
+
+**Question:** Why do we care about *population vs. sample*?
+
+.pull-left[
+
+
+&lt;img src="recap1_files/figure-html/simul_scater.png" width="450px" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+
+- On **average**, our regression lines match the population line very nicely.
+
+- However, **individual lines** (samples) can really miss the mark.
+
+- Differences between individual samples and the population lead to **uncertainty** for the econometrician.
+
+]
+
+---
+layout: false
+
+# Population *vs.* sample
+
+
+**Question:** Why do we care about *population vs. sample*?
+
+--
+
+**Answer:** Uncertainty matters.
+
+.pull-left[
+
+* Every random sample of data is different.
+
+* Our (OLS) estimators are computed from those samples of data.
+
+* If there is sampling variation, there is variation in our estimates.
+
+]
+
+--
+
+.pull-right[
+
+* OLS inference depends on certain assumptions.
+
+* If violated, our estimates will be biased or imprecise.
+
+* Or both.
+]
+
+---
+# Linear regression
+
+## The estimator
+
+We can estimate a regression line in `R` (`lm(y ~ x, my_data)`) and `stata` (`reg y x`). But where do these estimates come from?
+
+A few slides back:
+
+&gt; $$ \hat{y}_i = \hat{\beta}_0 + \hat{\beta}_1 x_i $$
+&gt; which gives us the *best-fit* line through our dataset.
+
+But what do we mean by "best-fit line"?
+
+
+
+---
+layout: false
+
+# Being the "best"
+
+**Question:** What do we mean by *best-fit line*?
+
+**Answers:**
+
+- In general (econometrics), *best-fit line* means the line that minimizes the sum of squared errors (SSE):
+
+.center[
+
+`\(\text{SSE} = \sum_{i = 1}^{n} e_i^2\quad\)` where `\(\quad e_i = y_i - \hat{y}_i\)`
+
+]
+
+- Ordinary **least squares** (**OLS**) minimizes the sum of the squared errors.
+- Based upon a set of (mostly palatable) assumptions, OLS
+  - Is unbiased (and consistent)
+  - Is the *best* (minimum variance) linear unbiased estimator (BLUE)
+
+---
+layout: true
+# OLS *vs.* other lines/estimators
+
+---
+
+Let's consider the dataset we previously generated.
+
+&lt;img src="recap1_niki_files/figure-html/ols vs lines 1-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+count: false
+
+For any line `\(\left(\hat{y} = \hat{\beta}_0 + \hat{\beta}_1 x\right)\)`
+
+&lt;img src="recap1_niki_files/figure-html/vs lines 2-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+count: false
+
+For any line `\(\left(\hat{y} = \hat{\beta}_0 + \hat{\beta}_1 x\right)\)`, we can calculate errors: `\(e_i = y_i - \hat{y}_i\)`
+
+&lt;img src="recap1_niki_files/figure-html/ols vs lines 3-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+count: false
+
+For any line `\(\left(\hat{y} = \hat{\beta}_0 + \hat{\beta}_1 x\right)\)`, we can calculate errors: `\(e_i = y_i - \hat{y}_i\)`
+
+&lt;img src="recap1_niki_files/figure-html/ols vs lines 4-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+count: false
+
+For any line `\(\left(\hat{y} = \hat{\beta}_0 + \hat{\beta}_1 x\right)\)`, we can calculate errors: `\(e_i = y_i - \hat{y}_i\)`
+
+&lt;img src="recap1_niki_files/figure-html/ols vs lines 5-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+count: false
+
+SSE squares the errors `\(\left(\sum e_i^2\right)\)`: bigger errors get bigger penalties.
+
+&lt;img src="recap1_niki_files/figure-html/ols vs lines 6-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+count: false
+
+The OLS estimate is the combination of `\(\hat{\beta}_0\)` and `\(\hat{\beta}_1\)` that minimize SSE.
+
+&lt;img src="recap1_niki_files/figure-html/ols vs lines 7-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+layout: false
+class: middle
+
+
+
+```r
+ScPoApps::launchApp("simple_reg")
+```
+
+
+---
+layout: true
+# OLS
+
+## Formally
+
+---
+
+In simple linear regression, the OLS estimator comes from choosing the `\(\hat{\beta}_0\)` and `\(\hat{\beta}_1\)` that minimize the sum of squared errors (SSE), _i.e._,
+
+$$ \min_{\hat{\beta}_0,\, \hat{\beta}_1} \text{SSE} $$
+
+--
+
+but we already know `\(\text{SSE} = \sum_i e_i^2\)`. Now use the definitions of `\(e_i\)` and `\(\hat{y}\)`.
+
+$$
+`\begin{aligned}
+  e_i^2 &amp;= \left( y_i - \hat{y}_i \right)^2 = \left( y_i - \hat{\beta}_0 - \hat{\beta}_1 x_i \right)^2 \\
+  &amp;= y_i^2 - 2 y_i \hat{\beta}_0 - 2 y_i \hat{\beta}_1 x_i + \hat{\beta}_0^2 + 2 \hat{\beta}_0 \hat{\beta}_1 x_i + \hat{\beta}_1^2 x_i^2
+\end{aligned}`
+$$
+
+--
+
+**Recall:** Minimizing a multivariate function requires (**1**) first derivatives equal zero (the *1.super[st]-order conditions*) and (**2**) second-order conditions (concavity).
+
+---
+layout: false
+
+# OLS
+
+## Interactively
+
+
+```r
+ScPoApps::launchApp("SSR_cone")
+```
+
+&lt;img src="../../img/photos/SSR_cone.png" width="450px" style="display: block; margin: auto;" /&gt;
+
+
+---
+# OLS
+
+## Interactively
+
+We skipped the maths. 
+
+We now have the OLS estimators for the slope
+
+$$ \hat{\beta}_1 = \dfrac{\sum_i (x_i - \overline{x})(y_i - \overline{y})}{\sum_i (x_i - \overline{x})^2} $$
+
+and the intercept
+
+$$ \hat{\beta}_0 = \overline{y} - \hat{\beta}_1 \overline{x} $$
+
+Remember that *those* two formulae are amongst the very few ones from the intro cours that you should know by heart! ❤️
+
+--
+
+We now turn to the assumptions and (implied) properties of OLS.
+
+---
+layout: true
+# OLS: Assumptions and properties
+
+---
+
+**Question:** What properties might we care about for an estimator?
+
+--
+
+**Tangent:** Let's review statistical properties first.
+
+---
+
+**Refresher:** Density functions
+
+Recall that we use **probability density functions** (PDFs) to describe the probability a **continuous random variable** takes on a range of values. (The total area = 1.)
+
+These PDFs characterize probability distributions, and the most common/famous/popular distributions get names (_e.g._, normal, *t*, Gamma).
+
+Here is the definition of a *PDF* `\(f_X\)`for a *continuous* RV `\(X\)`:
+
+$$
+\Pr[a \leq X \leq b] \equiv \int_a^b f_X (x) dx
+$$
+
+---
+
+**Refresher:** Density functions
+
+The probability a standard normal random variable takes on a value between -2 and 0: `\(\mathop{\text{P}}\left(-2 \leq X \leq 0\right) = 0.48\)`
+
+&lt;img src="recap1_niki_files/figure-html/example: pdf-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+**Refresher:** Density functions
+
+The probability a standard normal random variable takes on a value between -1.96 and 1.96: `\(\mathop{\text{P}}\left(-1.96 \leq X \leq 1.96\right) = 0.95\)`
+
+&lt;img src="recap1_niki_files/figure-html/example: pdf 2-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+**Refresher:** Density functions
+
+The probability a standard normal random variable takes on a value beyond 2: `\(\mathop{\text{P}}\left(X &gt; 2\right) = 0.023\)`
+
+&lt;img src="recap1_niki_files/figure-html/example: pdf 3-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+Imagine we are trying to estimate an unknown parameter `\(\beta\)`, and we know the distributions of three competing estimators. Which one would we want? How would we decide?
+
+&lt;img src="recap1_niki_files/figure-html/competing pdfs-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+**Question:** What properties might we care about for an estimator?
+
+--
+
+**Answer one: Bias.**
+
+On average (after *many* samples), does the estimator tend toward the correct value?
+
+**More formally:** Does the mean of estimator's distribution equal the parameter it estimates?
+
+$$ \mathop{\text{Bias}}_\beta \left( \hat{\beta} \right) = \mathop{\boldsymbol{E}}\left[ \hat{\beta} \right] - \beta $$
+
+---
+
+**Answer one: Bias.**
+
+.pull-left[
+
+**Unbiased estimator:** `\(\mathop{\boldsymbol{E}}\left[ \hat{\beta} \right] = \beta\)`
+
+&lt;img src="recap1_niki_files/figure-html/unbiased pdf-1.svg" style="display: block; margin: auto;" /&gt;
+
+]
+
+--
+
+.pull-right[
+
+**Biased estimator:** `\(\mathop{\boldsymbol{E}}\left[ \hat{\beta} \right] \neq \beta\)`
+
+&lt;img src="recap1_niki_files/figure-html/biased pdf-1.svg" style="display: block; margin: auto;" /&gt;
+
+]
+
+---
+
+**Answer two: Variance.**
+
+The central tendencies (means) of competing distributions are not the only things that matter. We also care about the **variance** of an estimator.
+
+$$ \mathop{\text{Var}} \left( \hat{\beta} \right) = \mathop{\boldsymbol{E}}\left[ \left( \hat{\beta} - \mathop{\boldsymbol{E}}\left[ \hat{\beta} \right] \right)^2 \right] $$
+
+Lower variance estimators mean we get estimates closer to the mean in each sample.
+
+---
+count: false
+
+**Answer two: Variance.**
+
+&lt;img src="recap1_niki_files/figure-html/variance pdf-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+**Answer one: Bias.**
+
+**Answer two: Variance.**
+
+**Subtlety:** The bias-variance tradeoff.
+
+Should we be willing to take a bit of bias to reduce the variance?
+
+In econometrics, we generally stick with unbiased (or consistent) estimators. But other disciplines (especially computer science) think a bit more about this tradeoff.
+
+---
+layout: false
+
+# The bias-variance tradeoff.
+
+&lt;img src="recap1_niki_files/figure-html/variance bias-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+# OLS: Assumptions and properties
+
+## Properties
+
+As you might have guessed by now,
+
+- OLS is **unbiased**.
+- OLS has the **minimum variance** of all unbiased linear estimators.
+
+---
+# OLS: Assumptions and properties
+
+## Properties
+
+But... these (very nice) properties depend upon a set of assumptions:
+
+1. The population relationship is linear in parameters with an additive disturbance.
+
+2. Our `\(X\)` variable is **exogenous**, _i.e._, `\(\mathop{\boldsymbol{E}}\left[ u |X \right] = 0\)`.
+
+3. The `\(X\)` variable has variation. And if there are multiple explanatory variables, they are not perfectly collinear.
+
+4. The population disturbances `\(u_i\)` are independently and identically distributed as normal random variables with mean zero `\(\left( \mathop{\boldsymbol{E}}\left[ u \right] = 0 \right)\)` and variance `\(\sigma^2\)` (_i.e._,  `\(\mathop{\boldsymbol{E}}\left[ u^2 \right] = \sigma^2\)`). Independently distributed and mean zero jointly imply `\(\mathop{\boldsymbol{E}}\left[ u_i u_j \right] = 0\)` for any `\(i\neq j\)`.
+
+---
+# OLS: Assumptions and properties
+
+## Assumptions
+
+Different assumptions guarantee different properties:
+
+- Assumptions (1), (2), and (3) make OLS unbiased.
+- Assumption (4) gives us an unbiased estimator for the variance of our OLS estimator.
+
+We will discuss solutions to **violations of these assumptions**. See also our discussion [in the book](https://scpoecon.github.io/ScPoEconometrics/std-errors.html#class-reg)
+
+- Non-linear relationships in our parameters/disturbances (or misspecification).
+- Disturbances that are not identically distributed and/or not independent.
+- Violations of exogeneity (especially omitted-variable bias).
+
+---
+# OLS: Assumptions and properties
+
+## Conditional expectation
+
+For many applications, our most important assumption is **exogeneity**, _i.e._,
+$$
+`\begin{align}
+  \mathop{E}\left[ u | X \right] = 0
+\end{align}`
+$$
+but what does it actually mean?
+
+--
+
+One way to think about this definition:
+
+&gt; For *any* value of `\(X\)`, the mean of the residuals must be zero.
+
+- _E.g._, `\(\mathop{E}\left[ u | X=1 \right]=0\)` *and* `\(\mathop{E}\left[ u | X=100 \right]=0\)`
+
+- _E.g._, `\(\mathop{E}\left[ u | X_2=\text{Female} \right]=0\)` *and* `\(\mathop{E}\left[ u | X_2=\text{Male} \right]=0\)`
+
+- Notice: `\(\mathop{E}\left[ u | X \right]=0\)` is more restrictive than `\(\mathop{E}\left[ u \right]=0\)`
+---
+layout: false
+class: clear, middle
+
+Graphically...
+---
+exclude: true
+
+
+---
+class: clear
+
+Valid exogeneity, _i.e._, `\(\mathop{E}\left[ u | X \right] = 0\)`
+
+&lt;img src="recap1_niki_files/figure-html/ex_good_exog-1.svg" style="display: block; margin: auto;" /&gt;
+---
+class: clear
+
+Invalid exogeneity, _i.e._, `\(\mathop{E}\left[ u | X \right] \neq 0\)`
+
+&lt;img src="recap1_niki_files/figure-html/ex_bad_exog-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+---
+class: title-slide-final, middle
+background-image: url(./img/logo/ScPo-Econ.png)
+background-size: 250px
+background-position: 9% 19%
+
+# Thanks!
+
+## This is the final slide
+
+### you can add your email, twitter, github, etc. info here
+
+Here is an example:  
+
+|                                                                                                            |                                   |
+| :--------------------------------------------------------------------------------------------------------- | :-------------------------------- |
+| &lt;a href="mailto:nikiforos.zampetakis@sciencespo.fr"&gt;.ScPored[&lt;i class="fa fa-paper-plane fa-fw"&gt;&lt;/i&gt;]               | nikiforos.zampetakis@sciencespo.fr       |
+| &lt;a href="https://github.com/ScPoEcon/Advanced-Metrics-slides"&gt;.ScPored[&lt;i class="fa fa-link fa-fw"&gt;&lt;/i&gt;] | slides |
+| &lt;a href="http://twitter.com/ScPoEcon"&gt;.ScPored[&lt;i class="fa fa-twitter fa-fw"&gt;&lt;/i&gt;]                          | @ScPoEcon                         |
+| &lt;a href="http://github.com/ScPoEcon"&gt;.ScPored[&lt;i class="fa fa-github fa-fw"&gt;&lt;/i&gt;]                          | @ScPoEcon                       |
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="js/ru_xaringan.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
