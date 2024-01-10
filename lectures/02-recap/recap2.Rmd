@@ -26,7 +26,7 @@ layout: true
 ```{r setup, include=FALSE,warning=FALSE,message=FALSE}
 options(htmltools.dir.version = FALSE)
 library(pacman)
-p_load(broom, latex2exp, ggplot2, ggthemes,  ggforce, viridis, dplyr, magrittr, knitr, parallel)
+p_load(broom, latex2exp, ggplot2, ggthemes,  ggforce, viridis, dplyr, magrittr, knitr, parallel, wooldridge)
 # Define pink color
 scpo_red <- "#d90502"
 # Knitr options
