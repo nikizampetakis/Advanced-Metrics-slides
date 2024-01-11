@@ -817,13 +817,10 @@ layout: false
 
 ## Interactively
 
-```{r,eval=FALSE}
+```{r,eval=F}
 ScPoApps::launchApp("SSR_cone")
 ```
 
-```{r,echo = F, dev = "png", dpi = 50, out.width = "450px", cache = T,eval = T}
-knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/img/photos/SSR_cone.png")
-```
 
 
 ---
@@ -841,7 +838,7 @@ and the intercept
 
 $$ \hat{\beta}_0 = \overline{y} - \hat{\beta}_1 \overline{x} $$
 
-Remember that *those* two formulae are amongst the very few ones from the intro cours that you should know by heart! ❤️
+Remember that *those* two formulae are amongst the very few ones from the intro cours that you should know by heart!
 
 --
 
