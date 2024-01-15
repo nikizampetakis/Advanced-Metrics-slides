@@ -103,7 +103,7 @@ purple <- "#6A5ACD"
 
 * Like, **how many** other variables?
 
-* And, above all: **which ones** ? 🤔
+* And, above all: **which ones** ?
 
 
 ]
@@ -439,7 +439,7 @@ layout: false
 
 ## Solutions
 
-1. Don't omit variables 😜
+1. Don't omit variables
 
 2. Instrumental variables and two-stage least squares (coming soon): If we could find something that **only** affects $x_1$ but *not* the omitted variable, we can make progress!
 
@@ -451,7 +451,7 @@ layout: false
 
 1. Proceed with caution (sometimes you can sign the bias).
 
-2. The key is to have a mental map of *should* belong to the model. 
+2. The key is to have a mental map of what *should* belong to the model. 
 
 
 
@@ -1438,7 +1438,7 @@ background-position: 9% 19%
 
 |                                                                                                            |                                   |
 | :--------------------------------------------------------------------------------------------------------- | :-------------------------------- |
-| <a href="mailto:florian.oswald@sciencespo.fr">.ScPored[<i class="fa fa-paper-plane fa-fw"></i>]               | florian.oswald@sciencespo.fr       |
+| <a href="mailto:nikiforos.zampetakis@sciencespo.fr">.ScPored[<i class="fa fa-paper-plane fa-fw"></i>]               | florian.oswald@sciencespo.fr       |
 | <a href="https://github.com/ScPoEcon/Advanced-Metrics-slides">.ScPored[<i class="fa fa-link fa-fw"></i>] | Slides |
 | <a href="https://scpoecon.github.io/ScPoEconometrics">.ScPored[<i class="fa fa-link fa-fw"></i>] | Book |
 | <a href="http://twitter.com/ScPoEcon">.ScPored[<i class="fa fa-twitter fa-fw"></i>]                          | @ScPoEcon                         |
