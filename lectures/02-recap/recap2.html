@@ -3,7 +3,7 @@
   <head>
     <title>ScPoEconometrics Advanced</title>
     <meta charset="utf-8" />
-    <meta name="author" content="Florian Oswald" />
+    <meta name="author" content="Nikiforos Zampetakis based on Florian Oswald’s slides" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/5235085b15.js"></script>
@@ -18,24 +18,32 @@
       gtag('config', 'UA-41584331-6');
     </script>
 
-    <link rel="stylesheet" href="../../css/scpo.css" type="text/css" />
-    <link rel="stylesheet" href="../../css/scpo-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="scpo.css" type="text/css" />
+    <link rel="stylesheet" href="scpo-fonts.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
+.title[
 # ScPoEconometrics Advanced
+]
+.subtitle[
 ## Recap 2
-### Florian Oswald
-### SciencesPo Paris </br> 2021-02-08
+]
+.author[
+### Nikiforos Zampetakis based on Florian Oswald’s slides
+]
+.date[
+### SciencesPo Paris </br> 2024-01-15
+]
 
 ---
 
 
 layout: true
 
-&lt;div class="my-footer"&gt;&lt;img src="../../img/logo/ScPo-shield.png" style="height: 60px;"/&gt;&lt;/div&gt; 
+&lt;div class="my-footer"&gt;&lt;img src="./img/logo/ScPo-shield.png" style="height: 60px;"/&gt;&lt;/div&gt; 
 
 ---
 
@@ -76,7 +84,7 @@ layout: true
 
 # Back to the STAR Experiment
 
-.left-thin[
+.pull-left[
 
 * Remember what we learned about the [STAR Experiment](https://scpoecon.github.io/ScPoEconometrics/STAR.html)
 
@@ -90,8 +98,8 @@ layout: true
 
 --
 
-.right-wide[
-&lt;img src="star1-1.png" width="1792" style="display: block; margin: auto;" /&gt;
+.pull-right[
+&lt;img src="star1-1.png" width="650px" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -304,7 +312,6 @@ Differentiate the model:
 $$ \dfrac{dy}{dx} = \beta_1 $$
 
 ---
-class: inverse
 
 # Task 1: Interpretation (4 minutes)
 
@@ -387,7 +394,6 @@ $$
 
 &lt;img src="recap2_files/figure-html/dat plot 2-1.svg" style="display: block; margin: auto;" /&gt;
 ---
-class: inverse
 
 # Task 2: Categorical Variables (3 Minutes)
 
@@ -471,8 +477,6 @@ Similarly, `\(\beta_1\)` gives the expected return to an additional year of scho
 
 ---
 
-class: inverse
-
 # Task 3: Interactions (4 minutes)
 
 * Same dataset!
@@ -498,7 +502,7 @@ lm(log(price) ~ bdrms, data = hprice1) %&gt;% tidy()
 ```
 
 ```
-#&gt; # A tibble: 2 x 5
+#&gt; # A tibble: 2 × 5
 #&gt;   term        estimate std.error statistic  p.value
 #&gt;   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
 #&gt; 1 (Intercept)    5.04     0.126      39.9  3.13e-57
@@ -604,7 +608,6 @@ What about that **approximation** part?
 ]
 
 ---
-class: inverse
 
 # Task 4
 
@@ -643,7 +646,6 @@ which says that for a one-percent increase in `\(x\)`, we will see a `\(\beta_1\
 
 $$ \dfrac{dy}{dx} \dfrac{x}{y} = \beta_1 $$
 ---
-class: inverse
 
 # task 5
 
@@ -666,7 +668,7 @@ lm(log(price) ~ log(sqrft), data = hprice1) %&gt;% tidy()
 ```
 
 ```
-#&gt; # A tibble: 2 x 5
+#&gt; # A tibble: 2 × 5
 #&gt;   term        estimate std.error statistic  p.value
 #&gt;   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
 #&gt; 1 (Intercept)   -0.975    0.641      -1.52 1.32e- 1
@@ -848,10 +850,75 @@ $$ \mathop{\hat{\text{SE}}} \left( \hat{\beta}_1 \right) = \sqrt{\dfrac{s^2}{\su
 Standard error output is standard in `R`'s `lm`:
 
 
+```
+#&gt; [[1]]
+#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
+#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
+#&gt; 
+#&gt; [[2]]
+#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
+#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
+#&gt; 
+#&gt; [[3]]
+#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
+#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
+#&gt; 
+#&gt; [[4]]
+#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
+#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
+#&gt; 
+#&gt; [[5]]
+#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
+#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
+#&gt; 
+#&gt; [[6]]
+#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
+#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
+#&gt; 
+#&gt; [[7]]
+#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
+#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
+#&gt; 
+#&gt; [[8]]
+#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
+#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"
+```
 
 
 ```
-#&gt; # A tibble: 2 x 5
+#&gt; # A tibble: 2 × 5
 #&gt;   term        estimate std.error statistic  p.value
 #&gt;   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
 #&gt; 1 (Intercept)    2.53     0.422       6.00 3.38e- 8
@@ -900,7 +967,7 @@ lm(y ~ x, data = pop_df) %&gt;% tidy(conf.int = TRUE)
 ```
 
 ```
-#&gt; # A tibble: 2 x 7
+#&gt; # A tibble: 2 × 7
 #&gt;   term        estimate std.error statistic  p.value conf.low conf.high
 #&gt;   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
 #&gt; 1 (Intercept)    2.53     0.422       6.00 3.38e- 8    1.69      3.37 
@@ -954,7 +1021,7 @@ Now, let's estimate 95% confidence intervals for each of these intervals...
 ]
 
 .right-thin[
-**From our previous simulation:** 97.6% of our 95% confidences intervals contain the true parameter value of `\(\beta_1\)`.
+**From our previous simulation:** 97.8% of our 95% confidences intervals contain the true parameter value of `\(\beta_1\)`.
 
 That's a **probabilistic statement**:
 
@@ -1023,7 +1090,7 @@ lm(y ~ x, data = pop_df) %&gt;% tidy()
 ```
 
 ```
-#&gt; # A tibble: 2 x 5
+#&gt; # A tibble: 2 × 5
 #&gt;   term        estimate std.error statistic  p.value
 #&gt;   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
 #&gt; 1 (Intercept)    2.53     0.422       6.00 3.38e- 8
@@ -1131,7 +1198,7 @@ background-position: 9% 19%
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
-<script src="../../js/ru_xaringan.js"></script>
+<script src="js/ru_xaringan.js"></script>
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
 "highlightLines": true,
@@ -1177,6 +1244,19 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
 (function() {
   "use strict"
   // Replace <script> tags in slides area to make them executable

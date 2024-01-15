@@ -1,25 +1,25 @@
 ---
 title: "ScPoEconometrics Advanced"
 subtitle: "Recap 2"
-author: "Florian Oswald"
+author: "Nikiforos Zampetakis based on Florian Oswald's slides"
 date: "SciencesPo Paris </br> `r Sys.Date()`"
 output:
   xaringan::moon_reader:
     lib_dir: libs
-    css: [default, "../../css/scpo.css", "../../css/scpo-fonts.css"]
+    css: [default, "scpo.css", "scpo-fonts.css"]
     nature:
-      beforeInit: ["../../js/ru_xaringan.js"]
+      beforeInit: ["js/ru_xaringan.js"]
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
       ratio: "16:9"
     includes:
-      in_header: ["../../libs/partials/header.html"]
+      in_header: "C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/libs/partials/header.html"
 ---
 
 layout: true
 
-<div class="my-footer"><img src="../../img/logo/ScPo-shield.png" style="height: 60px;"/></div> 
+<div class="my-footer"><img src="./img/logo/ScPo-shield.png" style="height: 60px;"/></div> 
 
 ---
 
@@ -119,7 +119,7 @@ purple <- "#6A5ACD"
 
 # Back to the STAR Experiment
 
-.left-thin[
+.pull-left[
 
 * Remember what we learned about the [STAR Experiment](https://scpoecon.github.io/ScPoEconometrics/STAR.html)
 
@@ -133,8 +133,8 @@ purple <- "#6A5ACD"
 
 --
 
-.right-wide[
-```{r,echo=FALSE}
+.pull-right[
+```{r,echo=FALSE, dev = "png", dpi = 50, out.width = "650px", cache = F,eval = T}
 knitr::include_graphics("star1-1.png")
 ```
 ]
@@ -500,7 +500,6 @@ Differentiate the model:
 $$ \dfrac{dy}{dx} = \beta_1 $$
 
 ---
-class: inverse
 
 # Task 1: Interpretation (4 minutes)
 
@@ -624,7 +623,6 @@ annotate(
 theme_empty
 ```
 ---
-class: inverse
 
 # Task 2: Categorical Variables (3 Minutes)
 
@@ -781,8 +779,6 @@ Similarly, $\beta_1$ gives the expected return to an additional year of schoolin
 
 ---
 
-class: inverse
-
 # Task 3: Interactions (4 minutes)
 
 * Same dataset!
@@ -910,7 +906,6 @@ What about that **approximation** part?
 ]
 
 ---
-class: inverse
 
 # Task 4
 
@@ -949,7 +944,6 @@ which says that for a one-percent increase in $x$, we will see a $\beta_1$ perce
 
 $$ \dfrac{dy}{dx} \dfrac{x}{y} = \beta_1 $$
 ---
-class: inverse
 
 # task 5
 
@@ -1122,10 +1116,14 @@ $$ \mathop{\hat{\text{SE}}} \left( \hat{\beta}_1 \right) = \sqrt{\dfrac{s^2}{\su
 
 Standard error output is standard in `R`'s `lm`:
 
-```{R, gen dataset, echo = FALSE}
+```{R, gen dataset, echo = FALSE, cache = T}
+# Check number of cores
+n.cores <- detectCores()
 # Set population and sample sizes
 n_p <- 100
 n_s <- 30
+#Create list to store results
+x.list <- sapply(1:1e4, list)
 # Set the seed
 set.seed(12468)
 # Generate data
@@ -1145,11 +1143,16 @@ lm0 <- lm(y ~ x, data = pop_df)
 lm1 <- lm(y ~ x, data = filter(pop_df, s1 == T))
 lm2 <- lm(y ~ x, data = filter(pop_df, s2 == T))
 lm3 <- lm(y ~ x, data = filter(pop_df, s3 == T))
+# Create Cluster
+clust <- makeCluster(n.cores)
+clusterExport(clust, c("pop_df", "n_s"))
+clusterEvalQ(clust, c({library("tidyverse")}, {library("broom")}))
 # Simulation
 set.seed(12468)
-sim_df <- mclapply(mc.cores = 10, X = 1:1e4, FUN = function(x, size = n_s) {
+sim_df <- parLapply(clust, x.list, fun = function(x, size = n_s) {
   lm(y ~ x, data = pop_df %>% sample_n(size = size)) %>% tidy()
 }) %>% do.call(rbind, .) %>% as_tibble()
+stopCluster(clust)
 ```
 
 ```{R, se}
