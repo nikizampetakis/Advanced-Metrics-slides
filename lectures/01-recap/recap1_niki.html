@@ -35,7 +35,7 @@ class: center, middle, inverse, title-slide
 ### Nikiforos Zampetakis based on Florian Oswald’s slides
 ]
 .date[
-### SciencesPo Paris </br> 2024-01-15
+### SciencesPo Paris </br> 2024-01-29
 ]
 
 ---
@@ -231,28 +231,6 @@ which gives us the _best-fit_ line through our dataset.
     `$$\text{avgmath}_i = \beta_0 + \text{classize}_i x_i + u_i$$`
 
 
----
-
-# Task 1: Solution
-
-1. Load the data 
-    
-    ```r
-    grades = haven::read_dta(file ="https://www.dropbox.com/s/wwp2cs9f0dubmhr/grade5.dta?dl=1")
-    ```
-1. Describe the dataset:
-    
-    ```r
-    library(dplyr)
-    grades %&gt;% 
-      select(classize,avgmath,avgverb) %&gt;%
-      skimr::skim()
-    ```
-1. Run OLS to estimate the relationship between class size and student achievement? 
-    
-    ```r
-    summary(lm(formula = avgmath ~ classize, data = grades))
-    ```
 
 ---
 layout: true
