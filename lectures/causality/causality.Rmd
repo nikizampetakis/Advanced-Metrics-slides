@@ -1,0 +1,128 @@
+---
+title: "ScPoEconometrics Advanced"
+subtitle: "Causality"
+author: "Nikiforos Zampetakis based on Florian Oswald's slides"
+date: "SciencesPo Paris </br> `r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: [default, "scpo.css", "scpo-fonts.css"]
+    nature:
+      beforeInit: ["js/ru_xaringan.js"]
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+    includes:
+      in_header: "C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/libs/partials/header.html"
+---
+
+layout: true
+
+<div class="my-footer"><img src="./img/logo/ScPo-shield.png" style="height: 60px;"/></div> 
+
+---
+
+# Causality
+
+
+What makes Econometrics different from Statistics? 
+
+**Causality**
+
+Statistics $\rightarrow$ statistical inference about large populations via sampling.
+
+Econometrics $\rightarrow$ causal inference via **counterfactuals**.
+
+<br>
+<br>
+
+But
+
+* What is causality?
+
+* What do counterfactuals mean?
+
+
+
+---
+
+# What does Causality means?
+
+
+**Why** did something happen?
+
+More precisely: **Does $x$ causes $y$**?
+
+Does $x$ has an **effect** on $y$?
+
+* e.g. Does smoking **cause** lung cancer?
+
+
+<br>
+<br>
+<br>
+
+.center[To answer the question what is a **counterfactual** we'll get a bit more rigorous.]
+
+---
+
+# Potential Outcomes Model (Rubin's Causal Model)
+
+
+Two states of the world (Potential Outcomes).
+
+ 1. Individual $i$ gets the treatment $\rightarrow$ $Y_i^1$.
+ 
+ 2. Individual $i$ does **not** get the treatment $\rightarrow$ $Y_i^0$.
+ 
+<br>
+ 
+The observed outcome is
+
+$$ Y_i = D_iY_i^1 + (1 - D_i)Y_i^0 \;\;\; D_i\in\{0,1\} $$
+That's a "mathy" way to describe a deep question.
+
+What would have happen to $i$ had they not received the treatment $D_i$?
+
+That's a deep question because we need to **imagine** a parallel universe that the actions taken were different.
+
+Potential outcome $Y_i^0$ is defined as a **counterfactual**.
+
+---
+
+# Treatment Effect
+
+The treatment effect for $i$ is
+
+$$\delta_i = Y_i^1 - Y_i^0$$
+
+
+
+We observe only on of the $Y_i^1$, $Y_i^0$ for every $i$ $\rightarrow$ We can *not* compute $\delta_i$.
+
+This is called
+
+**The Fundamental Identification Problem of Program Evaluation**
+
+---
+
+
+layout: false
+class: title-slide-final, middle
+background-image: url(../../img/logo/ScPo-econ.png)
+background-size: 250px
+background-position: 9% 19%
+
+# END
+
+
+
+
+|                                                                                                            |                                   |
+| :--------------------------------------------------------------------------------------------------------- | :-------------------------------- |
+| <a href="mailto:nikiforos.zampetakis@sciencespo.fr">.ScPored[<i class="fa fa-paper-plane fa-fw"></i>]               | florian.oswald@sciencespo.fr       |
+| <a href="https://github.com/ScPoEcon/Advanced-Metrics-slides">.ScPored[<i class="fa fa-link fa-fw"></i>] | Slides |
+| <a href="https://scpoecon.github.io/ScPoEconometrics">.ScPored[<i class="fa fa-link fa-fw"></i>] | Book |
+| <a href="http://twitter.com/ScPoEcon">.ScPored[<i class="fa fa-twitter fa-fw"></i>]                          | @ScPoEcon                         |
+| <a href="http://github.com/ScPoEcon">.ScPored[<i class="fa fa-github fa-fw"></i>]                          | @ScPoEcon                       |
