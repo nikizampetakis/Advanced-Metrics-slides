@@ -56,7 +56,7 @@ More precisely: **Does $x$ causes $y$**?
 
 Does $x$ has an **effect** on $y$?
 
-* e.g. Does smoking **cause** lung cancer?
+* e.g. Does smoking **causes** lung cancer?
 
 
 <br>
@@ -105,6 +105,42 @@ This is called
 
 **The Fundamental Identification Problem of Program Evaluation**
 
+But are we stuck?
+
+---
+
+# Question: What about an average effect?
+
+Average Treatment Effect
+
+$$\delta^{ATE} = \mathop{E}\left[ \delta_i \right] = \mathop{E}\left[ Y_i^1 \right] - \mathop{E}\left[ Y_i^0 \right]$$
+
+Fundamentally a **missing data problem**. We observe either $Y_i^1$ or $Y_i^0$.
+
+Set up a naive estimator. Difference of the mean outcome of the Treatment and Control group.
+
+$$\hat{\delta} = \mathop{E}\left[ Y_i^1 | D_i = 1 \right] - \mathop{E}\left[ Y_i^0 | D_i = 0 \right] = \frac{1}{N_T}\sum_{i \in T}^{N_T}T_i - \frac{1}{N_C}\sum_{j\in C}^{N_C}Y_j$$
+
+**Key consideration**: $\delta_i$ is different for different people. To learn about true $\delta^{ATE}$ from $\hat{\delta}$ it matters who gets treated.
+
+If individuals know the gains from treatment $\implies$ $i$s with high gains will select to treatment $\implies$ $\hat{\delta}$ will be upwardly biased from the true $\delta^{ATE}$.
+
+$$\mathop{E}\left[ Y_i^1 | D_i = 1 \right] \neq  \frac{1}{N_T}\sum_{i \in T}^{N_T}T_i$$
+
+---
+
+# Randomization to the rescue
+
+If randomly assign who gets treated or not (e.g. by flipping a coin) people with high expected gains can not select to get treated.
+
+**NB**: The distrib. of $\delta_i$ is still the same in the study pop. $\implies$ there are still people with high and low effects.
+
+Missing data problem solved!!
+
+Whether $Y_i^1$ or $Y_i^0$ is observed for each $i$ is random and not a function of any factor that $i$ can act upon.
+
+$$\hat{\delta} = \delta^{ATE}$$
+
 ---
 
 
@@ -121,7 +157,7 @@ background-position: 9% 19%
 
 |                                                                                                            |                                   |
 | :--------------------------------------------------------------------------------------------------------- | :-------------------------------- |
-| <a href="mailto:nikiforos.zampetakis@sciencespo.fr">.ScPored[<i class="fa fa-paper-plane fa-fw"></i>]               | florian.oswald@sciencespo.fr       |
+| <a href="mailto:nikiforos.zampetakis@sciencespo.fr">.ScPored[<i class="fa fa-paper-plane fa-fw"></i>]               | nikiforos.zampetakis@sciencespo.fr       |
 | <a href="https://github.com/ScPoEcon/Advanced-Metrics-slides">.ScPored[<i class="fa fa-link fa-fw"></i>] | Slides |
 | <a href="https://scpoecon.github.io/ScPoEconometrics">.ScPored[<i class="fa fa-link fa-fw"></i>] | Book |
 | <a href="http://twitter.com/ScPoEcon">.ScPored[<i class="fa fa-twitter fa-fw"></i>]                          | @ScPoEcon                         |
