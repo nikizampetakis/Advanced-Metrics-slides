@@ -47,7 +47,7 @@ But
 
 ---
 
-# What does Causality means?
+# What does causality means?
 
 
 **Why** did something happen?
@@ -98,14 +98,19 @@ The treatment effect for $i$ is
 $$\delta_i = Y_i^1 - Y_i^0$$
 
 
-
 We observe only on of the $Y_i^1$, $Y_i^0$ for every $i$ $\rightarrow$ We can *not* compute $\delta_i$.
+
+<br>
+<br>
 
 This is called
 
 **The Fundamental Identification Problem of Program Evaluation**
 
-But are we stuck?
+<br>
+<br>
+
+But are we stuck??
 
 ---
 
@@ -133,7 +138,13 @@ $$\mathop{E}\left[ Y_i^1 | D_i = 1 \right] \neq  \frac{1}{N_T}\sum_{i \in T}^{N_
 
 If randomly assign who gets treated or not (e.g. by flipping a coin) people with high expected gains can not select to get treated.
 
+<br>
+<br>
+
 **NB**: The distrib. of $\delta_i$ is still the same in the study pop. $\implies$ there are still people with high and low effects.
+
+<br>
+<br>
 
 Missing data problem solved!!
 
