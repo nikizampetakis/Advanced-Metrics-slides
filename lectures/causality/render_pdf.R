@@ -1,2 +1,2 @@
 library(pagedown)
-chrome_print("causality.html",output="causality.pdf")
+chrome_print("causality.html", output="causality.pdf")
