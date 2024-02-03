@@ -501,17 +501,16 @@ $$ \dfrac{dy}{dx} = \beta_1 $$
 
 1. Load the `wage1` dataset from the `wooldridge` package. you may have to install this first.
 
-2. Run `skimr::skim` on the dataset to get an overview. what is the fraciton of nonwhite in the data?
+2. Run `skimr::skim` on the dataset to get an overview. what is the fraction of nonwhite in the data?
 
 3. Regressing wage on education and tenure, what is the interpretation of the `tenure` coefficient? You may need to consult `?wage1` here.
 
 ---
 
-# Task 1: Solution
+  # Task 1: Solution
 
 1.Load the data
-
-```{r}
+```{r, echo=TRUE}
 library(tidyverse)
 library(wooldridge)
 
@@ -519,9 +518,8 @@ data("wage1")
 
 ```
 
-2.Run skimr::skim on the dataset to get an overview. what is the fraciton of nonwhite in the data?
-
-```{r}
+2.Run `skimr::skim` on the dataset to get an overview. what is the fraction of nonwhite in the data?
+```{r, eval = FALSE, echo=TRUE}
 library(skimr)
 
 wage1 %>% skim()
@@ -529,14 +527,15 @@ wage1 %>% skim()
 ```
 
 3.Regressing wage on education and tenure, what is the interpretation of the tenure coefficient? You may need to consult ?wage1 here.
-
-```{r}
+```{r, eval = FALSE, echo=TRUE}
 
 summary(lm(wage ~ educ + tenure, data = wage1))
 
 ```
 
 ---
+
+
 # Interpreting coefficients
 ## Categorical variables
 
@@ -667,7 +666,7 @@ theme_empty
 
 * Now regress `wage` on `female`. What is $E[wage | \text{male}]$?
 
-```{r}
+```{r, eval = FALSE, echo=TRUE}
 
 summary(lm(wage ~ female, data = wage1))
 
@@ -675,7 +674,7 @@ summary(lm(wage ~ female, data = wage1))
 
 * Add `married` to the regression. Now what is $E[wage | \text{female,not married}]$?
 
-```{r}
+```{r, eval = FALSE, echo=TRUE}
 
 summary(lm(wage ~ female + married, data = wage1))
 
@@ -842,7 +841,7 @@ Similarly, $\beta_1$ gives the expected return to an additional year of schoolin
 
 * Regress wage on experience, female indicator and their interaction. What is the interpretation of all the coefficients here? Can you distinguish them from zero?
 
-```{r}
+```{r, eval = FALSE, echo=TRUE}
 
 lm1 = lm(wage ~ female*exper, data = wage1)
 
@@ -854,7 +853,7 @@ summary(lm(wage ~ exper + female +female:exper, data = wage1))
 
 * What is the expected wage for a male with 5 years of experience?
 
-```{r}
+```{r, eval = FALSE, echo=TRUE}
 
 male5 = tibble(female = 0, exper = 5)
 
@@ -997,7 +996,7 @@ What about that **approximation** part?
 
 * Now regress *log wage* on education and tenure. How does the interpretation of the coefficient on education change?
 
-```{r}
+```{r, eval = FALSE, echo=TRUE}
 
 summary(lm(lwage ~ educ + tenure, data = wage1))
 
@@ -1051,7 +1050,7 @@ $$ \dfrac{dy}{dx} \dfrac{x}{y} = \beta_1 $$
 
 * Load the `hprice1` dataset from the `wooldridge` package.
 
-```{r}
+```{r, echo=TRUE}
 
 data("hprice1")
 
@@ -1059,7 +1058,7 @@ data("hprice1")
 
 * Regress log price on log sqrft. What is the interpretation on `log(sqrft)`?
 
-```{r}
+```{r, eval = FALSE, echo=TRUE}
 
 summary(lm(lprice ~ lsqrft, data = hprice1))
 
@@ -1104,6 +1103,7 @@ The *approximate* interpretation of $\beta_1$ is as before:
 ---
 
 ```{r}
+
 lm(log(price) ~ log(lotsize) + log(sqrft) + bdrms + colonial, hprice1) %>% summary()
 ```
 

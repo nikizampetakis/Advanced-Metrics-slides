@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ScPoEconometrics Advanced</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Nikiforos Zampetakis based on Florian Oswald’s slides" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/5235085b15.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-41584331-6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-41584331-6');
+    </script>
+
+    <link rel="stylesheet" href="scpo.css" type="text/css" />
+    <link rel="stylesheet" href="scpo-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# ScPoEconometrics Advanced
+]
+.subtitle[
+## Recap 2
+]
+.author[
+### Nikiforos Zampetakis based on Florian Oswald’s slides
+]
+.date[
+### SciencesPo Paris </br> 2024-02-03
+]
+
+---
+
+
+layout: true
+
+&lt;div class="my-footer"&gt;&lt;img src="./img/logo/ScPo-shield.png" style="height: 60px;"/&gt;&lt;/div&gt; 
+
+---
+
+
+
+
+
+# Recap 2
+
+.pull-left[
+
+* Last time, we refreshed our basic OLS knowledge
+
+* Today we continue and look at more than one explanatory variable, and associated problems
+
+]
+
+
+.pull-right[
+
+* But, why *more than one variable*?
+
+* Like, **how many** other variables?
+
+* And, above all: **which ones** ?
+
+
+]
+
+--
+
+&lt;br&gt;
+&lt;br&gt;
+
+.center[We will remember what we meant by **a model**.]
+
+---
+
+# Back to the STAR Experiment
+
+.pull-left[
+
+* Remember what we learned about the [STAR Experiment](https://scpoecon.github.io/ScPoEconometrics/STAR.html)
+
+* What is the causal impact of class size on test scores?
+
+* `\(\text{score}_i = \beta_0 + \beta_1 \text{classize}_i + u_i\)` ?
+ 
+* We use a **model** to order our thoughts about how a causal impact is determined. 
+
+]
+
+--
+
+.pull-right[
+&lt;img src="star1-1.png" width="650px" style="display: block; margin: auto;" /&gt;
+]
+
+---
+class: middle
+
+# Multiple Variables
+
+Let's augment our model with more variables:
+
+`$$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2  + \beta_3 x_3 +u$$`
+
+
+---
+# Spot the Difference 🕵️
+
+
+&lt;img src="recap2_sol_files/figure-html/dag1-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+layout: false
+class: title-slide-section-red, middle
+
+# Omitted-variable bias
+
+---
+layout: true
+# Omitted-variable bias
+
+---
+
+
+**Omitted-variable bias** (OVB) arises when we omit a variable that
+
+1. affects our outcome variable `\(y\)`
+
+2. correlates with an explanatory variable `\(x_j\)`
+
+As it's name suggests, this situation leads to bias in our estimate of `\(\beta_j\)`.
+
+--
+
+**Note:** OVB Is not exclusive to multiple linear regression, but it does require multiple variables affect `\(y\)`.
+
+---
+
+**Example**
+
+Let's imagine a simple model for the amount individual `\(i\)` gets paid
+
+$$ \text{Pay}_i = \beta_0 + \beta_1 \text{School}_i + \beta_2 \text{Male}_i + u_i $$
+
+where
+
+- `\(\text{School}_i\)` gives `\(i\)`'s years of schooling
+- `\(\text{Male}_i\)` denotes an indicator variable for whether individual `\(i\)` is male.
+
+thus
+
+- `\(\beta_1\)`: the returns to an additional year of schooling (*ceteris paribus*)
+- `\(\beta_2\)`: the premium for being male (*ceteris paribus*)
+&lt;br&gt;If `\(\beta_2 &gt; 0\)`, then there is discrimination against women—receiving less pay based upon gender.
+
+---
+layout: true
+# Omitted-variable bias
+
+**Example, continued**
+
+---
+
+From our population model
+
+$$ \text{Pay}_i = \beta_0 + \beta_1 \text{School}_i + \beta_2 \text{Male}_i + u_i $$
+
+If a study focuses on the relationship between pay and schooling, _i.e._,
+
+$$ \text{Pay}_i = \beta_0 + \beta_1 \text{School}_i + \left(\beta_2 \text{Male}_i + u_i\right) $$
+$$ \text{Pay}_i = \beta_0 + \beta_1 \text{School}_i + \varepsilon_i $$
+
+where `\(\varepsilon_i = \beta_2 \text{Male}_i + u_i\)`.
+
+We used our exogeneity assumption to derive OLS' unbiasedness. But even if `\(\mathop{\boldsymbol{E}}\left[ u | X \right] = 0\)`, it is not true that `\(\mathop{\boldsymbol{E}}\left[ \varepsilon | X \right] = 0\)` so long as `\(\beta_2 \neq 0\)`.
+
+Specifically, `\(\mathop{\boldsymbol{E}}\left[ \varepsilon | \text{Male} = 1 \right] = \beta_2 + \mathop{\boldsymbol{E}}\left[ u | \text{Male} = 1 \right] \neq 0\)`.
+--
+ **Now OLS is biased.**
+
+---
+
+Let's try to see this result graphically.
+
+
+
+The population model:
+
+$$ \text{Pay}_i = 20 + 0.5 \times \text{School}_i + 10 \times \text{Male}_i + u_i $$
+
+Our regression model that suffers from omitted-variable bias:
+
+$$ \text{Pay}_i = \hat{\beta}_0 + \hat{\beta}_1 \times \text{School}_i + e_i $$
+
+Finally, imagine that women, on average, receive more schooling than men.
+
+---
+layout: true
+# Omitted-variable bias
+**Example, continued:** `\(\text{Pay}_i = 20 + 0.5 \times \text{School}_i + 10 \times \text{Male}_i + u_i\)`
+
+---
+
+The relationship between pay and schooling.
+
+&lt;img src="recap2_sol_files/figure-html/plot ovb 1-1.svg" style="display: block; margin: auto;" /&gt;
+---
+count: false
+Biased regression estimate: `\(\widehat{\text{Pay}}_i = 31.3 + -0.9 \times \text{School}_i\)`
+
+&lt;img src="recap2_sol_files/figure-html/plot ovb 2-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+count: false
+Recalling the omitted variable: Gender **female** and .hi-slate[male]
+
+&lt;img src="recap2_sol_files/figure-html/plot ovb 3-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+count: false
+Recalling the omitted variable: Gender **female** and .hi-slate[male]
+
+&lt;img src="recap2_sol_files/figure-html/plot ovb 4-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+count: false
+Unbiased regression estimate: `\(\widehat{\text{Pay}}_i = 20.9 + 0.4 \times \text{School}_i + 9.1 \times \text{Male}_i\)`
+
+&lt;img src="recap2_sol_files/figure-html/plot ovb 5-1.svg" style="display: block; margin: auto;" /&gt;
+---
+layout: false
+class: clear, middle, center
+
+
+
+
+---
+
+# Omitted-variable bias
+
+## Solutions
+
+1. Don't omit variables
+
+2. Instrumental variables and two-stage least squares (coming soon): If we could find something that **only** affects `\(x_1\)` but *not* the omitted variable, we can make progress!
+
+3. Use multiple observations for the same unit `\(i\)`: panel data.
+
+**Warning:** There are situations in which neither solution is possible.
+
+--
+
+1. Proceed with caution (sometimes you can sign the bias).
+
+2. The key is to have a mental map of what *should* belong to the model. 
+
+---
+
+
+layout: false
+class: separator, middle
+
+# Interpreting coefficients
+
+
+---
+
+
+# Interpreting coefficients
+## Continuous variables
+
+Consider the relationship
+
+$$ \text{Pay}_i = \beta_0 + \beta_1 \, \text{School}_i + u_i $$
+
+where
+
+- `\(\text{Pay}_i\)` is a continuous variable measuring an individual's pay
+- `\(\text{School}_i\)` is a continuous variable that measures years of education
+
+---
+
+# Interpreting coefficients
+**Interpretations**
+
+- `\(\beta_0\)`: the `\(y\)`-intercept, _i.e._, `\(\text{Pay}\)` when `\(\text{School} = 0\)`
+- `\(\beta_1\)`: the expected increase in `\(\text{Pay}\)` for a one-unit increase in `\(\text{School}\)`
+
+---
+# Interpreting coefficients
+## Continuous variables
+
+
+Consider the model
+
+$$ y = \beta_0 + \beta_1 \, x + u $$
+
+Differentiate the model:
+
+$$ \dfrac{dy}{dx} = \beta_1 $$
+
+---
+
+# Task 1: Interpretation (4 minutes)
+
+1. Load the `wage1` dataset from the `wooldridge` package. you may have to install this first.
+
+2. Run `skimr::skim` on the dataset to get an overview. what is the fraction of nonwhite in the data?
+
+3. Regressing wage on education and tenure, what is the interpretation of the `tenure` coefficient? You may need to consult `?wage1` here.
+
+---
+
+  # Task 1: Solution
+
+1.Load the data
+
+```r
+library(tidyverse)
+library(wooldridge)
+
+data("wage1")
+```
+
+2.Run `skimr::skim` on the dataset to get an overview. what is the fraction of nonwhite in the data?
+
+```r
+library(skimr)
+
+wage1 %&gt;% skim()
+```
+
+3.Regressing wage on education and tenure, what is the interpretation of the tenure coefficient? You may need to consult ?wage1 here.
+
+```r
+summary(lm(wage ~ educ + tenure, data = wage1))
+```
+
+---
+
+
+# Interpreting coefficients
+## Categorical variables
+
+Consider the relationship
+
+$$ \text{Pay}_i = \beta_0 + \beta_1 \, \text{Female}_i + u_i $$
+
+where
+
+- `\(\text{Pay}_i\)` is a continuous variable measuring an individual's pay
+- `\(\text{Female}_i\)` is a binary/indicator variable taking `\(1\)` when `\(i\)` is female
+
+---
+# Interpreting coefficients
+**Interpretations**
+
+- `\(\beta_0\)`: the expected `\(\text{Pay}\)` for males (_i.e._, when `\(\text{Female} = 0\)`)
+- `\(\beta_1\)`: the expected difference in `\(\text{Pay}\)` between females and males
+- `\(\beta_0 + \beta_1\)`: the expected `\(\text{Pay}\)` for females
+
+---
+# Interpreting coefficients
+## Categorical variables
+
+Derivations
+
+$$
+`\begin{aligned}
+ \mathop{\boldsymbol{E}}\left[ \text{Pay} | \text{Male} \right] &amp;=
+ \mathop{\boldsymbol{E}}\left[ \beta_0 + \beta_1\times 0 + u_i \right] \\
+ &amp;= \mathop{\boldsymbol{E}}\left[ \beta_0 + 0 + u_i \right] \\
+ &amp;= \beta_0
+\end{aligned}`
+$$
+
+--
+
+$$
+`\begin{aligned}
+ \mathop{\boldsymbol{E}}\left[ \text{Pay} | \text{Female} \right] &amp;=
+ \mathop{\boldsymbol{E}}\left[ \beta_0 + \beta_1\times 1 + u_i \right] \\
+ &amp;= \mathop{\boldsymbol{E}}\left[ \beta_0 + \beta_1 + u_i \right] \\
+ &amp;= \beta_0 + \beta_1
+\end{aligned}`
+$$
+
+--
+
+**Note:** If there are no other variables to condition on, then `\(\hat{\beta}_1\)` equals the difference in group means, _e.g._, `\(\overline{x}_\text{Female} - \overline{x}_\text{Male}\)`.
+
+--
+
+**Note&lt;sub&gt;2&lt;/sub&gt;:** The *holding all other variables constant* interpretation also applies for categorical variables in multiple regression settings.
+
+---
+# Interpreting coefficients
+## Categorical variables
+
+`\(y_i = \beta_0 + \beta_1 x_i + u_i\)` for binary variable `\(x_i = \{\color{#314f4f}{0}, \, \color{#d90502}{1}\}\)`
+
+
+
+&lt;img src="recap2_sol_files/figure-html/dat plot 1-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+# Interpreting coefficients
+## Categorical variables
+
+`\(y_i = \beta_0 + \beta_1 x_i + u_i\)` for binary variable `\(x_i = \{\color{#314f4f}{0}, \, \color{#d90502}{1}\}\)`
+
+&lt;img src="recap2_sol_files/figure-html/dat plot 2-1.svg" style="display: block; margin: auto;" /&gt;
+---
+
+# Task 2: Categorical Variables (3 Minutes)
+
+* Continue with the `wage1` dataset. 
+
+* Now regress `wage` on `female`. What is `\(E[wage | \text{male}]\)`?
+
+* Add `married` to the regression. Now what is `\(E[wage | \text{female,not married}]\)`?
+
+
+---
+
+
+#Task 2: Solution
+
+* Now regress `wage` on `female`. What is `\(E[wage | \text{male}]\)`?
+
+
+```r
+summary(lm(wage ~ female, data = wage1))
+```
+
+* Add `married` to the regression. Now what is `\(E[wage | \text{female,not married}]\)`?
+
+
+```r
+summary(lm(wage ~ female + married, data = wage1))
+```
+
+---
+
+
+# Interpreting coefficients
+## Interactions
+
+Interactions allow the effect of one variable to change based upon the level of another variable.
+
+**Examples**
+
+1. Does the effect of schooling on pay change by gender?
+
+1. Does the effect of gender on pay change by race?
+
+1. Does the effect of schooling on pay change by experience?
+
+---
+# Interpreting coefficients
+## Interactions
+
+Previously, we considered a model that allowed women and men to have different wages, but the model assumed the effect of school on pay was the same for everyone:
+
+$$ \text{Pay}_i = \beta_0 + \beta_1 \, \text{School}_i + \beta_2 \, \text{Female}_i + u_i $$
+
+but we can also allow the effect of school to vary by gender:
+
+$$ \text{Pay}_i = \beta_0 + \beta_1 \, \text{School}_i + \beta_2 \, \text{Female}_i + \beta_3 \, \text{School}_i\times\text{Female}_i + u_i $$
+
+---
+# Interpreting coefficients
+## Interactions
+
+The model where schooling has the same effect for everyone (**&lt;font color="#e64173"&gt;F&lt;/font&gt;** and **&lt;font color="#314f4f"&gt;M&lt;/font&gt;**):
+
+
+
+&lt;img src="recap2_sol_files/figure-html/int plot 1-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+# Interpreting coefficients
+## Interactions
+
+The model where schooling's effect can differ by gender (**&lt;font color="#e64173"&gt;F&lt;/font&gt;** and **&lt;font color="#314f4f"&gt;M&lt;/font&gt;**):
+
+&lt;img src="recap2_sol_files/figure-html/int plot 2-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+# Interpreting coefficients
+## Interactions
+
+Interpreting coefficients can be a little tricky with interactions, but the key&lt;sup&gt;.pink[†]&lt;/sup&gt; is to carefully work through the math.
+
+.footnote[.pink[†] As is often the case with econometrics.]
+
+$$ \text{Pay}_i = \beta_0 + \beta_1 \, \text{School}_i + \beta_2 \, \text{Female}_i + \beta_3 \, \text{School}_i\times\text{Female}_i + u_i $$
+
+Expected returns for an additional year of schooling for women:
+
+$$
+`\begin{aligned}
+ \mathop{\boldsymbol{E}}\left[ \text{Pay}_i | \text{Female} \land \text{School} = \ell + 1 \right] -
+    \mathop{\boldsymbol{E}}\left[ \text{Pay}_i | \text{Female} \land \text{School} = \ell \right] &amp;= \\
+ \mathop{\boldsymbol{E}}\left[ \beta_0 + \beta_1 (\ell+1) + \beta_2 + \beta_3 (\ell + 1) + u_i \right] -
+    \mathop{\boldsymbol{E}}\left[ \beta_0 + \beta_1 \ell + \beta_2 + \beta_3 \ell + u_i  \right] &amp;= \\
+ \beta_1 + \beta_3
+\end{aligned}`
+$$
+
+--
+
+Similarly, `\(\beta_1\)` gives the expected return to an additional year of schooling for men. Thus, `\(\beta_3\)` gives the **difference in the returns to schooling** for women and men.
+
+---
+
+# Task 3: Interactions (4 minutes)
+
+* Same dataset!
+
+* Regress wage on experience, female indicator and their interaction. What is the interpretation of all the coefficients here? Can you distinguish them from zero?
+
+* What is the expected wage for a male with 5 years of experience? 
+
+---
+
+# Task 3: Solution
+
+* Regress wage on experience, female indicator and their interaction. What is the interpretation of all the coefficients here? Can you distinguish them from zero?
+
+
+```r
+lm1 = lm(wage ~ female*exper, data = wage1)
+
+summary(lm1)
+
+summary(lm(wage ~ exper + female +female:exper, data = wage1))
+```
+
+* What is the expected wage for a male with 5 years of experience?
+
+
+```r
+male5 = tibble(female = 0, exper = 5)
+
+predict(lm1, male5)
+```
+
+---
+
+
+# Interpreting coefficients
+## Log-linear specification
+
+In economics, you will frequently see logged outcome variables with linear (non-logged) explanatory variables, _e.g._,
+
+$$ \log(\text{price}_i) = \beta_0 + \beta_1  \text{bdrms}_i + u_i $$
+
+This specification changes our interpretation of the slope coefficients.
+
+
+```r
+data(hprice1,package = "wooldridge")
+lm(log(price) ~ bdrms, data = hprice1) %&gt;% tidy()
+```
+
+```
+#&gt; # A tibble: 2 × 5
+#&gt;   term        estimate std.error statistic  p.value
+#&gt;   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+#&gt; 1 (Intercept)    5.04     0.126      39.9  3.13e-57
+#&gt; 2 bdrms          0.167    0.0345      4.85 5.43e- 6
+```
+
+
+
+---
+# Interpreting coefficients
+## Log-linear specification
+
+.pull-left[
+
+**Interpretation**
+
+- A one-unit increase in our explanatory variable increases the outcome variable by *approximately* `\(\beta_1\times 100\)` percent.
+
+- *Example:* An additional bedroom increases sales prices of a house by *approximately* 16 percent (for `\(\beta_1 = 0.16\)`).
+
+]
+
+.pull-right[
+&lt;img src="recap2_sol_files/figure-html/unnamed-chunk-10-1.svg" style="display: block; margin: auto;" /&gt;
+]
+
+---
+# Interpreting coefficients
+## Log-linear specification
+
+
+Consider the log-linear model
+
+$$ \log(y) = \beta_0 + \beta_1 \, x + u $$
+
+and differentiate
+
+$$ \dfrac{dy}{y} = \beta_1 dx $$
+
+So a marginal change in `\(x\)` (_i.e._, `\(dx\)`) leads to a `\(\beta_1 dx\)` **percentage change** in `\(y\)`.
+
+---
+# Interpreting coefficients
+## Log-linear specification
+
+What about that **approximation** part?
+
+&gt; An additional bedroom increases sales prices of a house by *approximately* 16 percent (for `\(\beta_1 = 0.16\)`).
+
+.pull-left[
+
+* `\(\% \Delta y \approx 0.16 \times 100 = 16\%\)`.
+
+* Good approximation as long as `\(\Delta y\)` is not too big.
+
+* We approximate 
+    `$$\log\left(\frac{\Delta y}{y_0} + 1 \right) \approx \frac{\Delta y}{y_0}$$`
+    
+
+
+]
+
+--
+
+.pull-right[
+
+&lt;img src="recap2_sol_files/figure-html/unnamed-chunk-11-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+]
+
+---
+# Interpreting coefficients
+## Log-linear specification
+
+What about that **approximation** part?
+
+&gt; An additional bedroom increases sales prices of a house by *approximately* 16 percent (for `\(\beta_1 = 0.16\)`).
+
+.pull-left[
+
+* `\(\% \Delta y \approx 0.16 \times 100 = 16\%\)`.
+
+* Good approximation as long as `\(\Delta y\)` is not too big.
+
+* We approximate 
+    `$$\log\left(\frac{\Delta y}{y_0} + 1 \right) \approx \frac{\Delta y}{y_0}$$`
+    
+
+
+]
+
+
+.pull-right[
+
+* The **exact** formula is
+    `$$\% \Delta y = 100 \times \left(\exp\left(\Delta x\beta\right) - 1 \right)$$`
+    
+* In our case:
+    `$$\% \Delta y = 100 \times \left(\exp\left(0.16\right) - 1 \right) = 17.3$$`
+
+
+]
+
+---
+
+# Task 4
+
+* same Dataset!
+
+* Now regress *log wage* on education and tenure. How does the interpretation of the coefficient on education change?
+
+
+---
+
+# Task 4: Solution
+
+* Now regress *log wage* on education and tenure. How does the interpretation of the coefficient on education change?
+
+
+```r
+summary(lm(lwage ~ educ + tenure, data = wage1))
+```
+
+---
+
+
+# Interpreting coefficients
+## Log-log specification
+
+Similarly, econometricians frequently employ log-log models, in which the outcome variable is logged *and* at least one explanatory variable is logged
+
+$$ \log(\text{price}_i) = \beta_0 + \beta_1 \, \log(\text{sqrft}_i) + u_i $$
+
+**Interpretation:**
+
+- A one-percent increase in `\(x\)` will lead to a `\(\beta_1\)` percent change in `\(y\)`.
+- Often interpreted as an elasticity.
+
+---
+# Interpreting coefficients
+## Log-log specification
+
+
+Consider the log-log model
+
+$$ \log(y) = \beta_0 + \beta_1 \, \log(x) + u $$
+
+and differentiate
+
+$$ \dfrac{dy}{y} = \beta_1 \dfrac{dx}{x} $$
+
+which says that for a one-percent increase in `\(x\)`, we will see a `\(\beta_1\)` percent increase in `\(y\)`. As an elasticity:
+
+$$ \dfrac{dy}{dx} \dfrac{x}{y} = \beta_1 $$
+---
+
+# Task 5
+
+* Load the `hprice1` dataset from the `wooldridge` package.
+
+* Regress log price on log sqrft. What is the interpretation on `log(sqrft)`?
+
+* What is the `\(E[\text{price} | \text{sqrft} = 115]\)` (Caution! not `log price`!)
+
+
+---
+
+# Task 5
+
+* Load the `hprice1` dataset from the `wooldridge` package.
+
+
+```r
+data("hprice1")
+```
+
+* Regress log price on log sqrft. What is the interpretation on `log(sqrft)`?
+
+
+```r
+summary(lm(lprice ~ lsqrft, data = hprice1))
+```
+
+---
+# Interpreting coefficients
+## Log-log specification
+
+
+.pull-left[
+
+```r
+lm(log(price) ~ log(sqrft), data = hprice1) %&gt;% tidy()
+```
+
+```
+#&gt; # A tibble: 2 × 5
+#&gt;   term        estimate std.error statistic  p.value
+#&gt;   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+#&gt; 1 (Intercept)   -0.975    0.641      -1.52 1.32e- 1
+#&gt; 2 log(sqrft)     0.873    0.0846     10.3  1.05e-16
+```
+]
+
+.pull-right[
+
+* a 1% increase in square footage of the house leads to a 0.873% increase in sales price.
+
+* Notice the absence of *units* here (it's all in **percent** terms of both variables involved).
+
+]
+
+---
+# Interpreting coefficients
+## Log-linear with a binary variable
+
+**Note:** If you have a log-linear model with a binary indicator variable, the interpretation for the coefficient on that variable changes.
+
+Consider again
+
+$$ \log(y_i) = \beta_0 + \beta_1 x_1 + u_i $$
+
+for binary variable `\(x_1\)`.
+
+The *approximate* interpretation of `\(\beta_1\)` is as before:
+
+&gt;When `\(x_1\)` changes from 0 to 1, `\(y\)` will change by `\(100 \times \beta_1\)` percent.
+
+
+---
+
+
+```
+#&gt; 
+#&gt; Call:
+#&gt; lm(formula = log(price) ~ log(lotsize) + log(sqrft) + bdrms + 
+#&gt;     colonial, data = hprice1)
+#&gt; 
+#&gt; Residuals:
+#&gt;      Min       1Q   Median       3Q      Max 
+#&gt; -0.69479 -0.09750 -0.01619  0.09151  0.70228 
+#&gt; 
+#&gt; Coefficients:
+#&gt;              Estimate Std. Error t value Pr(&gt;|t|)    
+#&gt; (Intercept)  -1.34959    0.65104  -2.073   0.0413 *  
+#&gt; log(lotsize)  0.16782    0.03818   4.395 3.25e-05 ***
+#&gt; log(sqrft)    0.70719    0.09280   7.620 3.69e-11 ***
+#&gt; bdrms         0.02683    0.02872   0.934   0.3530    
+#&gt; colonial      0.05380    0.04477   1.202   0.2330    
+#&gt; ---
+#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#&gt; 
+#&gt; Residual standard error: 0.1841 on 83 degrees of freedom
+#&gt; Multiple R-squared:  0.6491,	Adjusted R-squared:  0.6322 
+#&gt; F-statistic: 38.38 on 4 and 83 DF,  p-value: &lt; 2.2e-16
+```
+
+.pull-left[
+
+**Approximate**
+
+- When *colonial* changes from 0 to 1 (i.e. house *becomes* colonial), `\(y\)` will change by `\(100 \times \beta_1  = 5.37\)` percent.
+
+]
+
+.pull-right[
+
+**Exact**
+
+
+- When *colonial* changes from 1 to 0, `\(y\)` will change by `\(100 \times \left( e^{\beta_1} -1 \right) = 5.52\)` percent.
+
+]
+
+
+---
+layout: false
+class: title-slide-section-red, middle
+
+# Uncertainty and inference
+
+
+
+
+---
+layout: true
+# Uncertainty and inference
+
+---
+
+## Is there more?
+
+Up to this point, we know OLS has some nice properties, and we know how to estimate an intercept and slope coefficient via OLS.
+
+Our current workflow:
+- Get data (points with `\(x\)` and `\(y\)` values)
+- Regress `\(y\)` on `\(x\)`
+- Plot the OLS line (_i.e._, `\(\hat{y} = \hat{\beta}_0 + \hat{\beta}_1\)`)
+- Done?
+
+But how do we actually **learn** something from this exercise?
+---
+
+## Linkup with Intro Course
+
+This is related to [*Intro Course material*](https://github.com/ScPoEcon/ScPoEconometrics-Slides):
+
+1. [Sampling](https://raw.githack.com/ScPoEcon/ScPoEconometrics-Slides/master/chapter6/chapter6.html)
+
+2. [Hypothesis Testing](https://raw.githack.com/ScPoEcon/ScPoEconometrics-Slides/master/chapter_CI_hypothesis/CI_and_hypothesis_test.html) 
+3. [Regression Inference](https://raw.githack.com/ScPoEcon/ScPoEconometrics-Slides/master/chapter_reginference/reg_inference.html)
+---
+
+## There is more
+
+But how do we actually **learn** something from this exercise?
+
+- Based upon our value of `\(\hat{\beta}_1\)`, can we rule out previously hypothesized values?
+- How confident should we be in the precision of our estimates?
+- How well does our model explain the variation we observe in `\(y\)`?
+
+We need to be able to deal with uncertainty. Enter: **Inference.**
+
+
+
+---
+layout: true
+# Uncertainty and inference
+## Learning from our errors
+
+---
+
+As our previous simulation pointed out, our problem with **uncertainty** is that we don't know whether our sample estimate is *close* or *far* from the unknown population parameter.&lt;sup&gt;.red[†]&lt;/sup&gt;
+
+However, all is not lost. We can use the errors `\(\left(e_i = y_i - \hat{y}_i\right)\)` to get a sense of how well our model explains the observed variation in `\(y\)`.
+
+When our model appears to be doing a "nice" job, we might be a little more confident in using it to learn about the relationship between `\(y\)` and `\(x\)`.
+
+Now we just need to formalize what a "nice job" actually means.
+
+.footnote[
+.red[†]: Except when we run the simulation ourselves—which is why we like simulations.
+]
+
+---
+
+First off, we will estimate the variance of `\(u_i\)` (recall: `\(\mathop{\text{Var}} \left( u_i \right) = \sigma^2\)`) using our squared errors, _i.e._,
+
+$$ s^2 = \dfrac{\sum_i e_i^2}{n - k} $$
+
+where `\(k\)` gives the number of slope terms and intercepts that we estimate (_e.g._, `\(\beta_0\)` and `\(\beta_1\)` would give `\(k=2\)`).
+
+`\(s^2\)` is an unbiased estimator of `\(\sigma^2\)`.
+
+---
+
+We know that the variance of `\(\hat{\beta}_1\)` (for simple linear regression) is
+
+`$$\mathop{\text{Var}} \left( \hat{\beta}_1 \right) = \frac{s^2}{\sum_i \left( x_i - \overline{x} \right)^2}$$`
+
+which shows that the variance of our slope estimator
+
+1. increases as our disturbances become noisier
+2. decreases as the variance of `\(x\)` increases
+
+---
+
+*More common:* The **standard error** of `\(\hat{\beta}_1\)`
+
+$$ \mathop{\hat{\text{SE}}} \left( \hat{\beta}_1 \right) = \sqrt{\dfrac{s^2}{\sum_i \left( x_i - \overline{x} \right)^2}} $$
+
+*Recall:* The standard error of an estimator is the standard deviation of the estimator's distribution.
+
+---
+
+Standard error output is standard in `R`'s `lm`:
+
+
+```
+#&gt; [[1]]
+#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
+#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
+#&gt; 
+#&gt; [[2]]
+#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
+#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
+#&gt; 
+#&gt; [[3]]
+#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
+#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
+#&gt; 
+#&gt; [[4]]
+#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
+#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
+#&gt; 
+#&gt; [[5]]
+#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
+#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
+#&gt; 
+#&gt; [[6]]
+#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
+#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
+#&gt; 
+#&gt; [[7]]
+#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
+#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
+#&gt; 
+#&gt; [[8]]
+#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
+#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"
+```
+
+
+```
+#&gt; # A tibble: 2 × 5
+#&gt;   term        estimate std.error statistic  p.value
+#&gt;   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+#&gt; 1 (Intercept)    2.53     0.422       6.00 3.38e- 8
+#&gt; 2 x              0.567    0.0793      7.15 1.59e-10
+```
+---
+
+We use the standard error of `\(\hat{\beta}_1\)`, along with `\(\hat{\beta}_1\)` itself, to learn about the parameter `\(\beta_1\)`.
+
+After deriving the distribution of `\(\hat{\beta}_1\)`,&lt;sup&gt;.red[†]&lt;/sup&gt; we have two (related) options for formal statistical inference (learning) about our unknown parameter `\(\beta_1\)`:
+
+- **Confidence intervals:** Use the estimate and its standard error to create an interval that, when repeated, will generally&lt;sup&gt;.red[††]&lt;/sup&gt; contain the true parameter.
+
+- **Hypothesis tests:** Determine whether there is statistically significant evidence to reject a hypothesized value or range of values.
+
+.footnote[
+.red[†]: *Hint:* it's normal with the mean and variance we've derived/discussed above)
+&lt;br&gt;
+.red[††]: _E.g._, Similarly constructed 95% confidence intervals will contain the true parameter 95% of the time.
+]
+
+---
+layout: true
+# Uncertainty and inference
+## Confidence intervals
+
+We construct `\((1-\alpha)\)`-level confidence intervals for `\(\beta_1\)`
+$$ \hat{\beta}\_1 \pm t\_{\alpha/2,\text{df}} \, \mathop{\hat{\text{SE}}} \left( \hat{\beta}\_1 \right) $$
+
+---
+
+`\(t_{\alpha/2,\text{df}}\)` denotes the `\(\alpha/2\)` quantile of a `\(t\)` dist. with `\(n-k\)` degrees of freedom.
+
+---
+
+For example, 100 obs., two coefficients (_i.e._, `\(\hat{\beta}_0\)` and `\(\hat{\beta}_1 \implies k = 2\)`), and `\(\alpha = 0.05\)` (for a 95% confidence interval) gives us `\(t_{0.025,\,98} = -1.98\)`
+
+&lt;img src="recap2_sol_files/figure-html/t dist-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+**Example:**
+
+```r
+lm(y ~ x, data = pop_df) %&gt;% tidy(conf.int = TRUE)
+```
+
+```
+#&gt; # A tibble: 2 × 7
+#&gt;   term        estimate std.error statistic  p.value conf.low conf.high
+#&gt;   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+#&gt; 1 (Intercept)    2.53     0.422       6.00 3.38e- 8    1.69      3.37 
+*#&gt; 2 x              0.567    0.0793      7.15 1.59e-10    0.410     0.724
+```
+
+--
+
+Our 95% confidence interval is thus `\(0.567 \pm 1.98 \times 0.0793 = \left[ 0.410,\, 0.724 \right]\)`
+
+---
+layout: true
+# Uncertainty and inference
+## Confidence intervals
+
+---
+
+So we have a confidence interval for `\(\beta_1\)`, _i.e._, `\(\left[ 0.410,\, 0.724 \right]\)`.
+
+What does it mean?
+
+--
+
+**Informally:** The confidence interval gives us a region (interval) in which we can place some trust (confidence) for containing the parameter.
+
+--
+
+**More formally:** If repeatedly sample from our population and construct confidence intervals for each of these samples, `\((1-\alpha)\)` percent of our intervals (_e.g._, 95%) will contain the population parameter *somewhere in the interval*.
+
+--
+https://scpoecon.github.io/ScPoEconometrics/std-errors.html#class-reg
+Now back to our simulation...
+
+---
+
+We drew 10,000 samples (each of size `\(n = 30\)`) from our population and estimated our regression model for each of these simulations:
+
+$$ y_i = \hat{\beta}_0 + \hat{\beta}_1 x_i + e_i $$
+&lt;center&gt;(repeated 10,000 times)&lt;/center&gt;
+
+Now, let's estimate 95% confidence intervals for each of these intervals...
+
+---
+
+
+
+.left-wide[
+
+&lt;img src="recap2_sol_files/figure-html/simulation ci-1.svg" style="display: block; margin: auto;" /&gt;
+
+]
+
+.right-thin[
+**From our previous simulation:** 97.8% of our 95% confidences intervals contain the true parameter value of `\(\beta_1\)`.
+
+That's a **probabilistic statement**:
+
+* Could be more.
+* Could be less. 
+
+]
+
+
+
+
+---
+layout: true
+# Uncertainty and inference
+## Hypothesis testing
+
+---
+
+In many applications, we want to know more than a point estimate or a range of values. We want to know what our statistical evidence says about existing theories.
+
+We want to test hypotheses posed by officials, politicians, economists, scientists, friends, weird neighbors, *etc.*
+
+.hi-slate[Examples]
+
+- Does increasing police presence **reduce crime**?
+- Does building a giant wall **reduce crime**?
+- Does shutting down a government **adversely affect the economy**?
+- Does legal cannabis **reduce drunk driving** or **reduce opiod use**?
+- Do air quality standards **increase health** and/or **reduce jobs**?
+
+---
+
+Hypothesis testing relies upon very similar results and intuition.
+
+While uncertainty certainly exists, we can still build *reliable* statistical tests (rejecting or failing to reject a posited hypothesis).
+
+--
+
+.hi-slate[OLS *t* test] Our (null) hypothesis states that `\(\beta_1\)` equals a value `\(c\)`, _i.e._, `\(H_o:\: \beta_1 = c\)`
+
+From OLS's properties, we can show that the test statistic
+
+$$ t_\text{stat} = \dfrac{\hat{\beta}_1 - c}{\mathop{\hat{\text{SE}}} \left( \hat{\beta}_1 \right)} $$
+
+follows the `\(t\)` distribution with `\(n-k\)` degrees of freedom.
+
+---
+
+For an `\(\alpha\)`-level, **two-sided** test, we reject the null hypothesis (and conclude with the alternative hypothesis) when
+
+$$ \left|t\_\text{stat}\right| &gt; \left|t\_{1-\alpha/2,\,df}\right| $$
+
+meaning that our **test statistic is more extreme than the critical value**.
+
+Alternatively, we can calculate the **p-value** that accompanies our test statistic, which effectively gives us the probability of seeing our test statistic *or a more extreme test statistic* if the null hypothesis were true.
+
+Very small p-values (generally &lt; 0.05) mean that it would be unlikely to see our results if the null hyopthesis were really true—we tend to reject the null for p-values below 0.05.
+
+---
+
+`R` and `stata`s default to testing hypotheses against the value zero.
+
+
+```r
+lm(y ~ x, data = pop_df) %&gt;% tidy()
+```
+
+```
+#&gt; # A tibble: 2 × 5
+#&gt;   term        estimate std.error statistic  p.value
+#&gt;   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+#&gt; 1 (Intercept)    2.53     0.422       6.00 3.38e- 8
+*#&gt; 2 x              0.567    0.0793      7.15 1.59e-10
+```
+--
+
+H.sub[o]: `\(\beta_1 = 0\)` *vs.* H.sub[a]: `\(\beta_1 \neq 0\)`
+
+--
+
+ `\(t_\text{stat} = 7.15\)` and `\(t_\text{0.975, 28} = 2.05\)`
+--
+ which implies *p*-value `\(&lt; 0.05\)`
+
+--
+
+Therefore, we .hi[reject H.sub[o]].
+
+---
+layout: true
+# Uncertainty and inference
+## *F* tests
+
+---
+You will sometimes see `\(F\)` tests in econometrics.
+
+We use `\(F\)` tests to test hypotheses that involve multiple parameters
+&lt;br&gt; (_e.g._, `\(\beta_1 = \beta_2\)` or `\(\beta_3 + \beta_4 = 1\)`),
+
+rather than a single simple hypothesis
+&lt;br&gt; (_e.g._, `\(\beta_1 = 0\)`, for which we would just use a `\(t\)` test).
+
+---
+**Example**
+
+Economists love to say "Money is fungible."
+
+Imagine that we might want to test whether money received as income actually has the same effect on consumption as money received from tax rebates/returns.
+
+$$ \text{Consumption}\_i = \beta\_0 + \beta\_1 \text{Income}\_{i} + \beta\_2 \text{Rebate}\_i + u\_i $$
+
+---
+
+**Example, continued**
+
+
+We can write our null hypothesis as
+
+$$ H_o:\: \beta_1 = \beta_2 \iff H_o :\: \beta_1 - \beta_2 = 0 $$
+
+Imposing this null hypothesis gives us the **restricted model**
+
+$$ \text{Consumption}\_i = \beta\_0 + \beta\_1 \text{Income}\_{i} + \beta\_1 \text{Rebate}\_i + u\_i $$
+$$ \text{Consumption}\_i = \beta\_0 + \beta\_1 \left( \text{Income}\_{i} + \text{Rebate}\_i \right) + u\_i $$
+
+---
+
+**Example, continued**
+
+To this the null hypothesis `\(H_o :\: \beta_1 = \beta_2\)` against `\(H_a :\: \beta_1 \neq \beta_2\)`,
+&lt;br&gt;we use the `\(F\)` statistic
+$$
+`\begin{align}
+  F_{q,\,n-k-1} = \dfrac{\left(\text{SSE}_r - \text{SSE}_u\right)/q}{\text{SSE}_u/(n-k-1)}
+\end{align}`
+$$
+which (as its name suggests) follows the `\(F\)` distribution with `\(q\)` numerator degrees of freedom and `\(n-k-1\)` denominator degrees of freedom.
+
+Here, `\(q\)` is the number of restrictions we impose via `\(H_o\)`.
+
+---
+
+**Example, continued**
+
+The term `\(\text{SSE}_r\)` is the sum of squared errors (SSE) from our **restricted model**
+$$ \text{Consumption}\_i = \beta\_0 + \beta\_1 \left( \text{Income}\_{i} + \text{Rebate}\_i \right) + u\_i $$
+
+and `\(\text{SSE}_u\)` is the sum of squared errors (SSE) from our **unrestricted model**
+$$ \text{Consumption}\_i = \beta\_0 + \beta\_1 \text{Income}\_{i} + \beta\_2 \text{Rebate}\_i + u\_i $$
+
+
+---
+layout: false
+class: title-slide-final, middle
+background-image: url(../../img/logo/ScPo-econ.png)
+background-size: 250px
+background-position: 9% 19%
+
+# END
+
+
+
+
+|                                                                                                            |                                   |
+| :--------------------------------------------------------------------------------------------------------- | :-------------------------------- |
+| &lt;a href="mailto:nikiforos.zampetakis@sciencespo.fr"&gt;.ScPored[&lt;i class="fa fa-paper-plane fa-fw"&gt;&lt;/i&gt;]               | florian.oswald@sciencespo.fr       |
+| &lt;a href="https://github.com/ScPoEcon/Advanced-Metrics-slides"&gt;.ScPored[&lt;i class="fa fa-link fa-fw"&gt;&lt;/i&gt;] | Slides |
+| &lt;a href="https://scpoecon.github.io/ScPoEconometrics"&gt;.ScPored[&lt;i class="fa fa-link fa-fw"&gt;&lt;/i&gt;] | Book |
+| &lt;a href="http://twitter.com/ScPoEcon"&gt;.ScPored[&lt;i class="fa fa-twitter fa-fw"&gt;&lt;/i&gt;]                          | @ScPoEcon                         |
+| &lt;a href="http://github.com/ScPoEcon"&gt;.ScPored[&lt;i class="fa fa-github fa-fw"&gt;&lt;/i&gt;]                          | @ScPoEcon                       |
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="js/ru_xaringan.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
