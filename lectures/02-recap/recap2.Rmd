@@ -612,7 +612,7 @@ annotate(
   geom = "text",
   x = 0.5,
   y = 1 + cat_reg$coefficients[1] + cat_reg$coefficients[2],
-  label = TeX("$\\hat{\\beta}_0 + \\hat{\\beta}_1 = Group_1}$"),
+  label = TeX("$\\hat{\\beta}_0 + \\hat{\\beta}_1 = Group_1$"),
   size = 7,
   color = scpo_red
 ) +
