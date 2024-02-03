@@ -429,11 +429,8 @@ ylim(-4.2, 3.4) +
 coord_equal()
 ```
 
-```{r}
 
-```
 ---
-layout: false
 
 # Omitted-variable bias
 
@@ -453,12 +450,9 @@ layout: false
 
 2. The key is to have a mental map of what *should* belong to the model. 
 
-
-
 ---
 
 
----
 layout: false
 class: separator, middle
 
@@ -466,6 +460,8 @@ class: separator, middle
 
 
 ---
+
+
 # Interpreting coefficients
 ## Continuous variables
 
