@@ -1112,7 +1112,7 @@ $$ \mathop{\hat{\text{SE}}} \left( \hat{\beta}_1 \right) = \sqrt{\dfrac{s^2}{\su
 
 Standard error output is standard in `R`'s `lm`:
 
-```{R, gen dataset, echo = FALSE, cache = T}
+```{R, gen dataset, echo = FALSE, cache = T, results = "hide"}
 # Check number of cores
 n.cores <- detectCores()
 # Set population and sample sizes

@@ -1,29 +1,31 @@
 ---
 title: "ScPoEconometrics: Advanced"
 subtitle: "Instrumental Variables"
-author: "Florian Oswald"
+author: "Nikiforos Zampetakis based on Florian Oswald's slides"
 date: "SciencesPo Paris </br> `r Sys.Date()`"
 output:
   xaringan::moon_reader:
     lib_dir: libs
-    css: [default, "../../css/scpo.css", "../../css/scpo-fonts.css"]
+    css: [default, "scpo.css", "scpo-fonts.css"]
     nature:
-      beforeInit: ["../../js/ru_xaringan.js"]
+      beforeInit: ["js/ru_xaringan.js"]
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
       ratio: "16:9"
     includes:
-      in_header: ["../../libs/partials/header.html"]
+      in_header: "C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/libs/partials/header.html"
 ---
 
 layout: true
 
-<div class="my-footer"><img src="../../img/logo/ScPo-shield.png" style="height: 60px;"/></div> 
+<div class="my-footer"><img src=""./img/logo/ScPo-shield.png"" style="height: 60px;"/></div> 
 
 ---
 
 ```{r setup, include=FALSE,warning=FALSE,message=FALSE}
+library(pacman)
+p_load(broom, latex2exp, ggplot2, ggthemes,  ggforce, viridis, dplyr, magrittr, knitr)
 options(htmltools.dir.version = FALSE)
 knitr::opts_chunk$set(
   message = FALSE,
@@ -48,11 +50,13 @@ library(magrittr)
 
 ## What Did we Do Last Week?
 
-* We introduced the `data.table` package.
+* We did a quick intro into causality and Rubin's Causal Model.
 
-* We compared it the `dplyr` approach.
+* We saw a situation where $\mathop{\boldsymbol{E}}\left[ u | X \right] = 0$ is violated (OVB).
 
-* We highlighted pros and cons and the potential for using them both.
+* We discussed the interpretation of coefficients under different variables' types.
+
+* Finally we scratched the surface of dealing with uncertainty and statical testing for inference.
 
 ]
 
@@ -141,7 +145,7 @@ p2
 .center[**IV** provides a solution to OVB.]
 
 ---
-background-image: url(../../img/Kensington_slums_large.jpg)
+background-image: url(Kensington_slums_large.jpg)
 background-size: cover
 class: middle
 
@@ -163,21 +167,20 @@ class: middle
 
 .pull-right[
 ```{r, fig.width=6,echo = FALSE}
-knitr::include_graphics("../../img/father-thames.jpg")
+knitr::include_graphics("father-thames.jpg")
 ```
 ]
 
 ---
-background-image: url(../../img/slum.jpg)
+background-image: url(slum.jpg)
 background-size: cover
 
 .pull-right[
 <br>
 <br>
 <br>
-.red[
+.white[
 ## In 1850:
-
 
 * Unknown that germs can cause disease.
 
@@ -185,7 +188,7 @@ background-size: cover
 
 * Most human pathogens are not visible to the naked eye.
 
-* The so-called *infection theory* (i.e. infection via *germs*) has some supporters, 
+* The so-called [*infection theory*](https://en.wikipedia.org/wiki/Germ_theory_of_disease) (i.e. infection via [*germs*](https://en.wikipedia.org/wiki/Microorganism)) has some supporters, 
 
 * but the dominant idea is that disease, in general, results from [*miasmas*](https://en.wikipedia.org/wiki/Miasma_theory)
 ]
@@ -215,7 +218,7 @@ background-size: 800px
 
 --
 
-.center[May the force be with you. (click [here!](https://itempool.com/floswald/c/pahhozoDAnF))]
+.center[ .white[May the force be with you. (click [here!](https://itempool.com/floswald/c/pahhozoDAnF))]]
 
 
 ---
@@ -236,7 +239,7 @@ background-size: 800px
 
 .pull-right[
 ```{r snow-map,echo = FALSE}
-knitr::include_graphics("../../img/snow-map.jpg")
+knitr::include_graphics("snow-map.jpg")
 ```
 ]
 
@@ -459,7 +462,7 @@ layout: true
 > [...] the mixing of the supply is of the most intimate kind. The pipes of each Company go down all the streets, and into nearly all the courts and alleys. [...] The experiment, too, is on the grandest scale. No fewer than three hundred thousand people of both sexes, of every age and occupation, and of every rank and station, from gentlefolks down to the very poor, were divided into two groups without their choice, and in most cases, without their knowledge; one group supplied with water containing the sewage of London, and amongst it, whatever might have come from the cholera patients, the other group having water quite free from such impurity.
 
 ---
-background-image: url("../../img/snow-supply.jpg")
+background-image: url("snow-supply.jpg")
 background-size: cover
 
 # London Water Supply
@@ -484,7 +487,7 @@ z_i &=  \begin{cases}
 * However, it seems to be uncorrelated with all the other factors in $u_i$, which worried us before: Water supply was decided years before, and now houses on the same street have different suppliers!
 
 ---
-background-image: url(../../img/IV-dag.png)
+background-image: url("IV-dag.png")
 background-position: 60% 50%
 
 # Simple IV in a DAG
@@ -603,7 +606,7 @@ background-position: 9% 19%
 
 |                                                                                                            |                                   |
 | :--------------------------------------------------------------------------------------------------------- | :-------------------------------- |
-| <a href="mailto:florian.oswald@sciencespo.fr">.ScPored[<i class="fa fa-paper-plane fa-fw"></i>]               | florian.oswald@sciencespo.fr       |
+| <a href="mailto:nikiforos.zampetakis@sciencespo.fr">.ScPored[<i class="fa fa-paper-plane fa-fw"></i>]               | nikiforos.zampetakis@sciencespo.fr       |
 | <a href="https://github.com/ScPoEcon/Advanced-Metrics-slides">.ScPored[<i class="fa fa-link fa-fw"></i>] | Slides |
 | <a href="https://scpoecon.github.io/ScPoEconometrics">.ScPored[<i class="fa fa-link fa-fw"></i>] | Book |
 | <a href="http://twitter.com/ScPoEcon">.ScPored[<i class="fa fa-twitter fa-fw"></i>]                          | @ScPoEcon                         |

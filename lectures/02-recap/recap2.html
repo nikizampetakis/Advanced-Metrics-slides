@@ -35,7 +35,7 @@ class: center, middle, inverse, title-slide
 ### Nikiforos Zampetakis based on Florian Oswald’s slides
 ]
 .date[
-### SciencesPo Paris </br> 2024-02-03
+### SciencesPo Paris </br> 2024-02-07
 ]
 
 ---
@@ -848,71 +848,6 @@ $$ \mathop{\hat{\text{SE}}} \left( \hat{\beta}_1 \right) = \sqrt{\dfrac{s^2}{\su
 Standard error output is standard in `R`'s `lm`:
 
 
-```
-#&gt; [[1]]
-#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
-#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
-#&gt; 
-#&gt; [[2]]
-#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
-#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
-#&gt; 
-#&gt; [[3]]
-#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
-#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
-#&gt; 
-#&gt; [[4]]
-#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
-#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
-#&gt; 
-#&gt; [[5]]
-#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
-#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
-#&gt; 
-#&gt; [[6]]
-#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
-#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
-#&gt; 
-#&gt; [[7]]
-#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
-#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
-#&gt; 
-#&gt; [[8]]
-#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
-#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"
-```
 
 
 ```

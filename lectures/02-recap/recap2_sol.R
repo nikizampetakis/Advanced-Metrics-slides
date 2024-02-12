@@ -25,6 +25,8 @@ summary(lm1)
 
 summary(lm(wage ~ exper + female + female:exper, data = wage1))
 
+summary(lm(wage ~ female:exper, data = wage1))
+
 male5 = tibble(female = 0, exper = 5)
 
 predict(lm1, male5)

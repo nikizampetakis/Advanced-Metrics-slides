@@ -3,37 +3,47 @@
   <head>
     <title>ScPoEconometrics: Advanced</title>
     <meta charset="utf-8" />
-    <meta name="author" content="Florian Oswald" />
+    <meta name="author" content="Nikiforos Zampetakis based on Florian Oswald’s slides" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/5235085b15.js"></script>
-    
+
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-41584331-6"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-    
+
       gtag('config', 'UA-41584331-6');
     </script>
-    <link rel="stylesheet" href="../../css/scpo.css" type="text/css" />
-    <link rel="stylesheet" href="../../css/scpo-fonts.css" type="text/css" />
+
+    <link rel="stylesheet" href="scpo.css" type="text/css" />
+    <link rel="stylesheet" href="scpo-fonts.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
+.title[
 # ScPoEconometrics: Advanced
+]
+.subtitle[
 ## Instrumental Variables
-### Florian Oswald
-### SciencesPo Paris </br> 2020-10-07
+]
+.author[
+### Nikiforos Zampetakis based on Florian Oswald’s slides
+]
+.date[
+### SciencesPo Paris </br> 2024-02-12
+]
 
 ---
 
 
 layout: true
 
-&lt;div class="my-footer"&gt;&lt;img src="../../img/logo/ScPo-shield.png" style="height: 60px;"/&gt;&lt;/div&gt; 
+&lt;div class="my-footer"&gt;&lt;img src=""./img/logo/ScPo-shield.png"" style="height: 60px;"/&gt;&lt;/div&gt; 
 
 ---
 
@@ -45,11 +55,13 @@ layout: true
 
 ## What Did we Do Last Week?
 
-* We introduced the `data.table` package.
+* We did a quick intro into causality and Rubin's Causal Model.
 
-* We compared it the `dplyr` approach.
+* We saw a situation where `\(\mathop{\boldsymbol{E}}\left[ u | X \right] = 0\)` is violated (OVB).
 
-* We highlighted pros and cons and the potential for using them both.
+* We discussed the interpretation of coefficients under different variables' types.
+
+* Finally we scratched the surface of dealing with uncertainty and statical testing for inference.
 
 ]
 
@@ -120,7 +132,7 @@ layout: true
 .center[**IV** provides a solution to OVB.]
 
 ---
-background-image: url(../../img/Kensington_slums_large.jpg)
+background-image: url(Kensington_slums_large.jpg)
 background-size: cover
 class: middle
 
@@ -141,20 +153,19 @@ class: middle
 ]
 
 .pull-right[
-&lt;img src="../../img/father-thames.jpg" width="2667" style="display: block; margin: auto;" /&gt;
+&lt;img src="father-thames.jpg" width="2667" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
-background-image: url(../../img/slum.jpg)
+background-image: url(slum.jpg)
 background-size: cover
 
 .pull-right[
 &lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;
-.red[
+.white[
 ## In 1850:
-
 
 * Unknown that germs can cause disease.
 
@@ -162,7 +173,7 @@ background-size: cover
 
 * Most human pathogens are not visible to the naked eye.
 
-* The so-called *infection theory* (i.e. infection via *germs*) has some supporters, 
+* The so-called [*infection theory*](https://en.wikipedia.org/wiki/Germ_theory_of_disease) (i.e. infection via [*germs*](https://en.wikipedia.org/wiki/Microorganism)) has some supporters, 
 
 * but the dominant idea is that disease, in general, results from [*miasmas*](https://en.wikipedia.org/wiki/Miasma_theory)
 ]
@@ -192,7 +203,7 @@ background-size: 800px
 
 --
 
-.center[May the force be with you. (click [here!](https://itempool.com/floswald/c/pahhozoDAnF))]
+.center[ .white[May the force be with you. (click [here!](https://itempool.com/floswald/c/pahhozoDAnF))]]
 
 
 ---
@@ -212,7 +223,7 @@ background-size: 800px
 --
 
 .pull-right[
-&lt;img src="../../img/snow-map.jpg" width="1024" style="display: block; margin: auto;" /&gt;
+&lt;img src="snow-map.jpg" width="1024" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -421,7 +432,7 @@ layout: true
 &gt; [...] the mixing of the supply is of the most intimate kind. The pipes of each Company go down all the streets, and into nearly all the courts and alleys. [...] The experiment, too, is on the grandest scale. No fewer than three hundred thousand people of both sexes, of every age and occupation, and of every rank and station, from gentlefolks down to the very poor, were divided into two groups without their choice, and in most cases, without their knowledge; one group supplied with water containing the sewage of London, and amongst it, whatever might have come from the cholera patients, the other group having water quite free from such impurity.
 
 ---
-background-image: url("../../img/snow-supply.jpg")
+background-image: url("snow-supply.jpg")
 background-size: cover
 
 # London Water Supply
@@ -446,7 +457,7 @@ z_i &amp;=  \begin{cases}
 * However, it seems to be uncorrelated with all the other factors in `\(u_i\)`, which worried us before: Water supply was decided years before, and now houses on the same street have different suppliers!
 
 ---
-background-image: url(../../img/IV-dag.png)
+background-image: url("IV-dag.png")
 background-position: 60% 50%
 
 # Simple IV in a DAG
@@ -545,15 +556,16 @@ background-position: 9% 19%
 
 |                                                                                                            |                                   |
 | :--------------------------------------------------------------------------------------------------------- | :-------------------------------- |
-| &lt;a href="mailto:florian.oswald@sciencespo.fr"&gt;.ScPored[&lt;i class="fa fa-paper-plane fa-fw"&gt;&lt;/i&gt;]               | florian.oswald@sciencespo.fr       |
+| &lt;a href="mailto:nikiforos.zampetakis@sciencespo.fr"&gt;.ScPored[&lt;i class="fa fa-paper-plane fa-fw"&gt;&lt;/i&gt;]               | nikiforos.zampetakis@sciencespo.fr       |
 | &lt;a href="https://github.com/ScPoEcon/Advanced-Metrics-slides"&gt;.ScPored[&lt;i class="fa fa-link fa-fw"&gt;&lt;/i&gt;] | Slides |
 | &lt;a href="https://scpoecon.github.io/ScPoEconometrics"&gt;.ScPored[&lt;i class="fa fa-link fa-fw"&gt;&lt;/i&gt;] | Book |
 | &lt;a href="http://twitter.com/ScPoEcon"&gt;.ScPored[&lt;i class="fa fa-twitter fa-fw"&gt;&lt;/i&gt;]                          | @ScPoEcon                         |
 | &lt;a href="http://github.com/ScPoEcon"&gt;.ScPored[&lt;i class="fa fa-github fa-fw"&gt;&lt;/i&gt;]                          | @ScPoEcon                       |
+
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
-<script src="../../js/ru_xaringan.js"></script>
+<script src="js/ru_xaringan.js"></script>
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
 "highlightLines": true,
@@ -599,6 +611,19 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
 (function() {
   "use strict"
   // Replace <script> tags in slides area to make them executable

@@ -35,7 +35,7 @@ class: center, middle, inverse, title-slide
 ### Nikiforos Zampetakis based on Florian Oswald’s slides
 ]
 .date[
-### SciencesPo Paris </br> 2024-02-03
+### SciencesPo Paris </br> 2024-02-07
 ]
 
 ---
@@ -954,79 +954,27 @@ $$ \mathop{\hat{\text{SE}}} \left( \hat{\beta}_1 \right) = \sqrt{\dfrac{s^2}{\su
 Standard error output is standard in `R`'s `lm`:
 
 
-```
-#&gt; [[1]]
-#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
-#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
-#&gt; 
-#&gt; [[2]]
-#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
-#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
-#&gt; 
-#&gt; [[3]]
-#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
-#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
-#&gt; 
-#&gt; [[4]]
-#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
-#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
-#&gt; 
-#&gt; [[5]]
-#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
-#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
-#&gt; 
-#&gt; [[6]]
-#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
-#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
-#&gt; 
-#&gt; [[7]]
-#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
-#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"     
-#&gt; 
-#&gt; [[8]]
-#&gt;  [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt;  [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [13] "grDevices" "utils"     "datasets"  "methods"   "base"      "broom"    
-#&gt; [19] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
-#&gt; [25] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-#&gt; [31] "grDevices" "utils"     "datasets"  "methods"   "base"
-```
 
 
 ```
-#&gt; # A tibble: 2 × 5
-#&gt;   term        estimate std.error statistic  p.value
-#&gt;   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-#&gt; 1 (Intercept)    2.53     0.422       6.00 3.38e- 8
-#&gt; 2 x              0.567    0.0793      7.15 1.59e-10
+#&gt; 
+#&gt; Call:
+#&gt; lm(formula = y ~ x, data = pop_df)
+#&gt; 
+#&gt; Residuals:
+#&gt;     Min      1Q  Median      3Q     Max 
+#&gt; -3.7495 -0.8099 -0.0512  0.8260  2.7870 
+#&gt; 
+#&gt; Coefficients:
+#&gt;             Estimate Std. Error t value Pr(&gt;|t|)    
+#&gt; (Intercept)  2.52921    0.42182   5.996 3.38e-08 ***
+#&gt; x            0.56697    0.07932   7.148 1.59e-10 ***
+#&gt; ---
+#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#&gt; 
+#&gt; Residual standard error: 1.109 on 98 degrees of freedom
+#&gt; Multiple R-squared:  0.3427,	Adjusted R-squared:  0.336 
+#&gt; F-statistic: 51.09 on 1 and 98 DF,  p-value: 1.586e-10
 ```
 ---
 
@@ -1125,7 +1073,7 @@ Now, let's estimate 95% confidence intervals for each of these intervals...
 ]
 
 .right-thin[
-**From our previous simulation:** 97.8% of our 95% confidences intervals contain the true parameter value of `\(\beta_1\)`.
+**From our previous simulation:** 98% of our 95% confidences intervals contain the true parameter value of `\(\beta_1\)`.
 
 That's a **probabilistic statement**:
 
