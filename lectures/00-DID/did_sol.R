@@ -27,9 +27,11 @@ str(ck1994)
 
 ck1994 %>% group_by(state, observation) %>% summarise(n_stores = n_distinct(sheet))
 
+#Q3
+
 ck1994 = ck1994 %>% ungroup %>% mutate(empfte = empft + 0.5*emppt + nmgrs)
 
-#Q3
+#Q4
 
 did = ck1994 %>% group_by(state, observation) %>% summarise(avg_fte = mean(empfte, na.rm = T),
                                                             pc_ft = mean(empft/empfte, na.rm = T)*100,
