@@ -20,24 +20,32 @@
       gtag('config', 'UA-41584331-6');
     </script>
 
-    <link rel="stylesheet" href="../../css/scpo.css" type="text/css" />
-    <link rel="stylesheet" href="../../css/scpo-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="scpo.css" type="text/css" />
+    <link rel="stylesheet" href="scpo-fonts.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
+.title[
 # ScPoEconometrics
+]
+.subtitle[
 ## Differences-in-Differences
+]
+.author[
 ### Florian Oswald, Gustave Kenedi and Pierre Villedieu
-### SciencesPo Paris </br> 2021-01-24
+]
+.date[
+### SciencesPo Paris </br> 2024-02-12
+]
 
 ---
 
 
 layout: true
 
-&lt;div class="my-footer"&gt;&lt;img src="../../img/logo/ScPo-shield.png" style="height: 60px;"/&gt;&lt;/div&gt; 
+&lt;div class="my-footer"&gt;&lt;img src="./img/logo/ScPo-shield.png" style="height: 60px;"/&gt;&lt;/div&gt; 
 
 ---
 
@@ -45,7 +53,7 @@ layout: true
 
 layout: true
 
-&lt;div class="my-footer"&gt;&lt;img src="../../img/logo/ScPo-shield.png" style="height: 60px;"/&gt;&lt;/div&gt; 
+&lt;div class="my-footer"&gt;&lt;img src="./img/logo/ScPo-shield.png" style="height: 60px;"/&gt;&lt;/div&gt; 
 
 ---
 
@@ -98,7 +106,7 @@ layout: true
 
 --
 
-* Next week we will look at __regression discontinuity designs__.
+* Next week we will look at __Instrumental Variables__.
 
 ---
 
@@ -166,7 +174,7 @@ layout: true
 --
 
 .pull-left[
-&lt;img src="../../img/photos/nj_penn_map.png" width="600px" style="display: block; margin: auto;" /&gt;
+&lt;img src="nj_penn_map.jpg" width="200px" style="display: block; margin: auto;" /&gt;
 ]
 
 --
@@ -224,7 +232,7 @@ ck1994 %&gt;%
 ```
 
 ```
-## # A tibble: 6 x 6
+## # A tibble: 6 × 6
 ##   sheet chain  state        observation   empft emppt
 ##   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;        &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt;
 ## 1 46    bk     Pennsylvania February 1992  30    15  
@@ -237,8 +245,6 @@ ck1994 %&gt;%
 
 ]
 ---
-
-class: inverse
 
 # Task 1 (10 minutes)
 
@@ -279,8 +285,8 @@ class: inverse
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Change in mean FTE
 employment &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; &lt;span style=" font-weight: bold;    color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(253, 231, 37, 1) !important;text-align: c;"&gt;-2.17&lt;/span&gt; &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; &lt;span style=" font-weight: bold;    color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(68, 1, 84, 1) !important;text-align: center;"&gt;0.59&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;span style=" font-weight: bold;    color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(253, 231, 37, 255) !important;text-align: c;"&gt;-2.17&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &lt;span style=" font-weight: bold;    color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: rgba(68, 1, 84, 255) !important;text-align: center;"&gt;0.59&lt;/span&gt; &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -574,7 +580,7 @@ layout: true
 
 Here is the actual trends for Pennsylvania and New Jersey
 
-&lt;img src="../../img/photos/min_wage_parallel_trends.png" width="600px" style="display: block; margin: auto;" /&gt;
+&lt;img src="min_wage_parallel_trends.png" width="600px" style="display: block; margin: auto;" /&gt;
 
 --
 
@@ -797,6 +803,19 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
 (function() {
   "use strict"
   // Replace <script> tags in slides area to make them executable

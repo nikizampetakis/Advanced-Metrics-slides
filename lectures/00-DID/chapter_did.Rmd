@@ -6,7 +6,7 @@ date: "SciencesPo Paris </br> `r Sys.Date()`"
 output:
   xaringan::moon_reader:
     lib_dir: libs
-    css: [default, "../../css/scpo.css", "../../css/scpo-fonts.css"]
+    css: [default, "scpo.css", "scpo-fonts.css"]
     nature:
       beforeInit: ["../../js/ru_xaringan.js"]
       highlightStyle: github
@@ -14,12 +14,12 @@ output:
       countIncrementalSlides: false
       ratio: "16:9"
     includes:
-      in_header: "../../libs/partials/header.html"
+      in_header: "C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/libs/partials/header.html"
 ---
 
 layout: true
 
-<div class="my-footer"><img src="../../img/logo/ScPo-shield.png" style="height: 60px;"/></div> 
+<div class="my-footer"><img src="./img/logo/ScPo-shield.png" style="height: 60px;"/></div> 
 
 ---
 
@@ -51,7 +51,7 @@ set.seed(1234)
 
 layout: true
 
-<div class="my-footer"><img src="../../img/logo/ScPo-shield.png" style="height: 60px;"/></div> 
+<div class="my-footer"><img src="./img/logo/ScPo-shield.png" style="height: 60px;"/></div> 
 
 ---
 
@@ -104,7 +104,7 @@ layout: true
 
 --
 
-* Next week we will look at __regression discontinuity designs__.
+* Next week we will look at __Instrumental Variables__.
 
 ---
 
@@ -172,8 +172,8 @@ layout: true
 --
 
 .pull-left[
-```{r, echo = F, out.width = "600px"}
-knitr::include_graphics("../../img/photos/nj_penn_map.png")
+```{r, echo = F, out.width = "200px"}
+knitr::include_graphics("nj_penn_map.jpg")
 ```
 ]
 
@@ -238,8 +238,6 @@ ck1994 %>%
 
 ]
 ---
-
-class: inverse
 
 # Task 1 (10 minutes)
 
@@ -956,7 +954,7 @@ grid.brackets(x,
 Here is the actual trends for Pennsylvania and New Jersey
 
 ```{r, echo = F, out.width = "600px"}
-knitr::include_graphics("../../img/photos/min_wage_parallel_trends.png")
+knitr::include_graphics("min_wage_parallel_trends.png")
 ```
 
 --
