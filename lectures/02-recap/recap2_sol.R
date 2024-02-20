@@ -35,6 +35,8 @@ predict(lm1, male5)
 
 summary(lm(lwage ~ educ + tenure, data = wage1))
 
+(exp(0.086528) - 1)*100
+
 #Task 5
 
 data("hprice1")
