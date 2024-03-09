@@ -111,7 +111,7 @@ $$
 
 
 .pull-right[
-&lt;img src="05-IV2_files/figure-html/mincer-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="05-IV2-niki_files/figure-html/mincer-1.svg" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -132,7 +132,7 @@ $$
 
 
 .pull-right[
-&lt;img src="05-IV2_files/figure-html/mincer2-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="05-IV2-niki_files/figure-html/mincer2-1.svg" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -180,7 +180,7 @@ $$
 
 .pull-right[
 
-&lt;img src="05-IV2_files/figure-html/mincer3-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="05-IV2-niki_files/figure-html/mincer3-1.svg" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -200,7 +200,7 @@ $$
 
 .pull-right[
 
-&lt;img src="05-IV2_files/figure-html/mincer4-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="05-IV2-niki_files/figure-html/mincer4-1.svg" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -245,7 +245,7 @@ $$
 
 .pull-right[
 
-&lt;img src="05-IV2_files/figure-html/ak-mod-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="05-IV2-niki_files/figure-html/ak-mod-1.svg" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -512,7 +512,7 @@ ggplot(ak91_age, aes(x = yob + (qob - 1) / 4, y = s )) +
 ]
 
 .pull-right[
-&lt;img src="05-IV2_files/figure-html/ak91-dummy-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="05-IV2-niki_files/figure-html/ak91-dummy-1.svg" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -550,7 +550,7 @@ ggplot(ak91_age, aes(x = yob + (qob - 1) / 4, y = lnw)) +
 
 .pull-right[
 
-&lt;img src="05-IV2_files/figure-html/ak91-wage-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="05-IV2-niki_files/figure-html/ak91-wage-1.svg" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -561,18 +561,19 @@ ggplot(ak91_age, aes(x = yob + (qob - 1) / 4, y = lnw)) +
 &lt;br&gt;
 
 .pull-left[
+.pull-left[
 * Several options (like always with `R`! 😉)
 
-* Will use the [`iv_robust`](https://declaredesign.org/r/estimatr/reference/iv_robust.html) function from the `estimatr` package.
+* Will use the [`feols`](https://www.rdocumentation.org/packages/fixest/versions/0.8.4/topics/feols) function from the `fixest` package.
 
-* *Robust*? Computes standard errors which are correcting for heteroskedasticity. [Details here.](https://declaredesign.org/r/estimatr/articles/mathematical-notes.html)
+* We will compute *robust* standard errors which are correcting for heteroskedasticity. [Details here.](https://cran.r-project.org/web/packages/fixest/vignettes/standard_errors.html)
 ]
 
 
 .pull-right[
 
 ```r
-library(estimatr)
+library(fixest)
 # create a list of models
 mod &lt;- list()
 
@@ -589,9 +590,9 @@ mod[["2. stage"]] &lt;- lm(lnw ~ shat, data = ak91)
 # doing IV all in one go
 # notice the formula!
 # formula = y ~ x | z
-mod$`2SLS`  &lt;- iv_robust(lnw ~ s | q4,
-                                   data = ak91,
-                         diagnostics = TRUE)
+mod$`2SLS`  &lt;- feols(lnw ~ 1 | s ~ q4,
+                     data = ak91,
+                     vcov = "hetero")
 ```
 ]
 
@@ -606,9 +607,9 @@ count: false
 .pull-left[
 * Several options (like always with `R`! 😉)
 
-* Will use the [`iv_robust`](https://declaredesign.org/r/estimatr/reference/iv_robust.html) function from the `estimatr` package.
+* Will use the [`feols`](https://www.rdocumentation.org/packages/fixest/versions/0.8.4/topics/feols) function from the `fixest` package.
 
-* *Robust*? Computes standard errors which are correcting for heteroskedasticity. [Details here.](https://declaredesign.org/r/estimatr/articles/mathematical-notes.html)
+* We will compute *robust* standard errors which are correcting for heteroskedasticity. [Details here.](https://cran.r-project.org/web/packages/fixest/vignettes/standard_errors.html)
 
 * Notice the `predict` to get `\(\hat{s}\)`.
 ]
@@ -617,7 +618,7 @@ count: false
 .pull-right[
 
 ```r
-library(estimatr)
+library(fixest)
 # create a list of models
 mod &lt;- list()
 
@@ -627,16 +628,16 @@ mod$ols &lt;- lm(lnw ~ s, data = ak91)
 # IV: born in q4 is TRUE?
 # doing IV manually in 2 stages.
 mod[["1. stage"]] &lt;- lm(s ~ q4, data = ak91)
-*ak91$shat         &lt;- predict(mod[["1. stage"]])
+ak91$shat         &lt;- predict(mod[["1. stage"]])  
 mod[["2. stage"]] &lt;- lm(lnw ~ shat, data = ak91)
 
 # run 2SLS
 # doing IV all in one go
 # notice the formula!
 # formula = y ~ x | z
-mod$`2SLS`  &lt;- iv_robust(lnw ~ s | q4,
-                         data = ak91,
-                         diagnostics = TRUE)
+mod$`2SLS`  &lt;- feols(lnw ~ 1 | s ~ q4,
+                     data = ak91,
+                     vcov = "hetero")
 ```
 ]
 
@@ -675,14 +676,14 @@ mod$`2SLS`  &lt;- iv_robust(lnw ~ s | q4,
    &lt;td style="text-align:center;"&gt; 0.071*** &lt;/td&gt;
    &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
    &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 0.074** &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; (0.000) &lt;/td&gt;
    &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
    &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.028) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; q4 &lt;/td&gt;
@@ -706,11 +707,25 @@ mod$`2SLS`  &lt;- iv_robust(lnw ~ s | q4,
    &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; (0.030) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; fit_s &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.074** &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
    &lt;td style="text-align:left;box-shadow: 0px 1.5px"&gt;  &lt;/td&gt;
    &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt;  &lt;/td&gt;
    &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (0.030) &lt;/td&gt;
    &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (0.028) &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; R2 &lt;/td&gt;
@@ -720,11 +735,11 @@ mod$`2SLS`  &lt;- iv_robust(lnw ~ s | q4,
    &lt;td style="text-align:center;"&gt; 0.117 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; 1. Stage F: &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; F &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 43782.556 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 48.095 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6.146 &lt;/td&gt;
    &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 48.99 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;tfoot&gt;&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
@@ -780,9 +795,9 @@ mod$`2SLS`  &lt;- iv_robust(lnw ~ s | q4,
 # we keep adding to our `mod` list:
 mod$ols_yr  &lt;- update(mod$ols, . ~ . + yob_fct)  #  previous OLS model
 # add exogenous vars on both sides of the `|` !
-mod[["2SLS_yr"]] &lt;- estimatr::iv_robust(lnw ~ s  + yob_fct | q4 + yob_fct, data = ak91, diagnostics = TRUE )  
+mod[["2SLS_yr"]] &lt;- feols(lnw ~ yob_fct | s ~ q4, data = ak91, vcov = "hetero")  
 # use all quarters as IVs
-mod[["2SLS_all"]] &lt;- estimatr::iv_robust(lnw ~ s  + yob_fct | qob_fct + yob_fct, data = ak91, diagnostics = TRUE  )
+mod[["2SLS_all"]] &lt;- feols(lnw ~ yob_fct | s ~ qob_fct, data = ak91, vcov = "hetero")
 ```
 
 
@@ -817,16 +832,32 @@ mod[["2SLS_all"]] &lt;- estimatr::iv_robust(lnw ~ s  + yob_fct | qob_fct + yob_f
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; s &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; 0.071*** &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 0.074** &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; 0.071*** &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; (0.000) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; (0.000) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; fit_s &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.074** &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; 0.075** &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; 0.105*** &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;box-shadow: 0px 1.5px"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (0.000) &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt;  &lt;/td&gt;
    &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (0.028) &lt;/td&gt;
-   &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (0.000) &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt;  &lt;/td&gt;
    &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (0.028) &lt;/td&gt;
    &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (0.020) &lt;/td&gt;
   &lt;/tr&gt;
@@ -837,14 +868,6 @@ mod[["2SLS_all"]] &lt;- estimatr::iv_robust(lnw ~ s  + yob_fct | qob_fct + yob_f
    &lt;td style="text-align:center;"&gt; 0.118 &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; 0.117 &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; 0.091 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; 1. Stage F: &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 48.99 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 47.73 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 32.32 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Instruments &lt;/td&gt;
@@ -872,7 +895,7 @@ mod[["2SLS_all"]] &lt;- estimatr::iv_robust(lnw ~ s  + yob_fct | qob_fct + yob_f
 # Additional Control Variables
 
 .pull-left[
-&lt;table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+&lt;table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto;" class="table"&gt;
  &lt;thead&gt;
   &lt;tr&gt;
    &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
@@ -886,11 +909,11 @@ mod[["2SLS_all"]] &lt;- estimatr::iv_robust(lnw ~ s  + yob_fct | qob_fct + yob_f
 &lt;tbody&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; (Intercept) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 4.995 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 4.955 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 5.017 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 4.966 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 4.592 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.995*** &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.955*** &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.017*** &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.966*** &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.592*** &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
@@ -902,17 +925,33 @@ mod[["2SLS_all"]] &lt;- estimatr::iv_robust(lnw ~ s  + yob_fct | qob_fct + yob_f
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; s &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 0.071 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 0.074 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 0.071 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 0.075 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 0.105 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.071*** &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.071*** &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; (0.000) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; (0.000) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; fit_s &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.074** &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.075** &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.105*** &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;box-shadow: 0px 1.5px"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (0.000) &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt;  &lt;/td&gt;
    &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (0.028) &lt;/td&gt;
-   &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (0.000) &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt;  &lt;/td&gt;
    &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (0.028) &lt;/td&gt;
    &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (0.020) &lt;/td&gt;
   &lt;/tr&gt;
@@ -923,14 +962,6 @@ mod[["2SLS_all"]] &lt;- estimatr::iv_robust(lnw ~ s  + yob_fct | qob_fct + yob_f
    &lt;td style="text-align:center;"&gt; 0.118 &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; 0.117 &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; 0.091 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; 1. Stage F: &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 48.99 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 47.73 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 32.32 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Instruments &lt;/td&gt;
@@ -949,6 +980,8 @@ mod[["2SLS_all"]] &lt;- estimatr::iv_robust(lnw ~ s  + yob_fct | qob_fct + yob_f
    &lt;td style="text-align:center;"&gt; yes &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
+&lt;tfoot&gt;&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; + p &amp;lt; 0.1, * p &amp;lt; 0.05, ** p &amp;lt; 0.01, *** p &amp;lt; 0.001&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;
 &lt;/table&gt;
 ]
 
@@ -1023,7 +1056,7 @@ where we fear that `\(Cov(x,u) \neq 0\)`, `\(x\)` is *endogenous*.
 
 # Valid Model (A) vs Invalid Model (B) for IV `z`
 
-&lt;img src="05-IV2_files/figure-html/IV-dag2-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="05-IV2-niki_files/figure-html/IV-dag2-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -1162,7 +1195,7 @@ data(mroz,package = "wooldridge")
 mods = list()
 mods$OLS &lt;- lm(lwage ~ educ, data = mroz)
 mods[['First Stage']] &lt;- lm(educ ~ fatheduc, data = subset(mroz, inlf == 1))
-mods$IV  &lt;- estimatr::iv_robust(lwage ~ educ | fatheduc, data = mroz)
+mods$IV  &lt;- feols(lwage ~ 1 | educ ~ fatheduc, data = mroz, vcov = "hetero")
 ```
 
 &lt;table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto;" class="table"&gt;
@@ -1185,19 +1218,19 @@ mods$IV  &lt;- estimatr::iv_robust(lwage ~ educ | fatheduc, data = mroz)
    &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; (0.185) &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; (0.276) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.467) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; (0.465) &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; educ &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; 0.109*** &lt;/td&gt;
    &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 0.059 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; (0.014) &lt;/td&gt;
    &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.037) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; fatheduc &lt;/td&gt;
@@ -1206,10 +1239,22 @@ mods$IV  &lt;- estimatr::iv_robust(lwage ~ educ | fatheduc, data = mroz)
    &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; (0.029) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; fit_educ &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.059 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
    &lt;td style="text-align:left;box-shadow: 0px 1.5px"&gt;  &lt;/td&gt;
    &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (0.029) &lt;/td&gt;
    &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (0.037) &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Num.Obs. &lt;/td&gt;
@@ -1232,7 +1277,7 @@ mods$IV  &lt;- estimatr::iv_robust(lwage ~ educ | fatheduc, data = mroz)
 
 # IV Standard Errors
 
-&lt;img src="05-IV2_files/figure-html/se-plot-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="05-IV2-niki_files/figure-html/se-plot-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -1274,18 +1319,18 @@ $$
 
 We are worried that smoking behavior is correlated with a range of other health-related variables which are in `\(u\)` and which could impact the birthweight of the child. So we look for an IV. Suppose we use the price of cigarettes (*cigprice*), assuming that the price of cigarettes is uncorrelated with factors in `\(u\)`. Let's run the first stage of *cigprice* on *packs* and then let's show the 2SLS estimates:
 
-
 ---
 
-# Weak Stuff
-
+# Weak Stuf (Different Package)
 
 
 ```r
+library(estimatr)
 data(bwght, package = "wooldridge")
 mods &lt;- list()
 mods[["First Stage"]] &lt;- lm(packs ~ cigprice, data = bwght)
-mods[["IV"]] &lt;- estimatr::iv_robust(log(bwght) ~  packs | cigprice, data = bwght, diagnostics = TRUE)
+mods[["IV"]] &lt;- estimatr::iv_robust(log(bwght) ~  packs | cigprice, data = bwght, 
+                                    diagnostics = TRUE)
 ```
 
 &lt;table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
@@ -1332,14 +1377,8 @@ mods[["IV"]] &lt;- estimatr::iv_robust(log(bwght) ~  packs | cigprice, data = bw
    &lt;td style="text-align:center;"&gt; 0.000 &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; -23.230 &lt;/td&gt;
   &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; 1. Stage F: &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 0.12 &lt;/td&gt;
-  &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-
 
 ---
 
@@ -1391,7 +1430,6 @@ background-position: 9% 19%
 | &lt;a href="https://scpoecon.github.io/ScPoEconometrics"&gt;.ScPored[&lt;i class="fa fa-link fa-fw"&gt;&lt;/i&gt;] | Book |
 | &lt;a href="http://twitter.com/ScPoEcon"&gt;.ScPored[&lt;i class="fa fa-twitter fa-fw"&gt;&lt;/i&gt;]                          | @ScPoEcon                         |
 | &lt;a href="http://github.com/ScPoEcon"&gt;.ScPored[&lt;i class="fa fa-github fa-fw"&gt;&lt;/i&gt;]                          | @ScPoEcon                       |
-
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

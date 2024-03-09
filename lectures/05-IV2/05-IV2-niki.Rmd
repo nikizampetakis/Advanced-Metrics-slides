@@ -517,17 +517,18 @@ ggplot(ak91_age, aes(x = yob + (qob - 1) / 4, y = lnw)) +
 <br>
 
 .pull-left[
+.pull-left[
 * Several options (like always with `R`! 😉)
 
-* Will use the [`iv_robust`](https://declaredesign.org/r/estimatr/reference/iv_robust.html) function from the `estimatr` package.
+* Will use the [`feols`](https://www.rdocumentation.org/packages/fixest/versions/0.8.4/topics/feols) function from the `fixest` package.
 
-* *Robust*? Computes standard errors which are correcting for heteroskedasticity. [Details here.](https://declaredesign.org/r/estimatr/articles/mathematical-notes.html)
+* We will compute *robust* standard errors which are correcting for heteroskedasticity. [Details here.](https://cran.r-project.org/web/packages/fixest/vignettes/standard_errors.html)
 ]
 
 
 .pull-right[
 ```{r}
-library(estimatr)
+library(fixest)
 # create a list of models
 mod <- list()
 
@@ -544,9 +545,9 @@ mod[["2. stage"]] <- lm(lnw ~ shat, data = ak91)
 # doing IV all in one go
 # notice the formula!
 # formula = y ~ x | z
-mod$`2SLS`  <- iv_robust(lnw ~ s | q4,
-                                   data = ak91,
-                         diagnostics = TRUE)
+mod$`2SLS`  <- feols(lnw ~ 1 | s ~ q4,
+                     data = ak91,
+                     vcov = "hetero")
 ```
 ]
 
@@ -561,9 +562,9 @@ count: false
 .pull-left[
 * Several options (like always with `R`! 😉)
 
-* Will use the [`iv_robust`](https://declaredesign.org/r/estimatr/reference/iv_robust.html) function from the `estimatr` package.
+* Will use the [`feols`](https://www.rdocumentation.org/packages/fixest/versions/0.8.4/topics/feols) function from the `fixest` package.
 
-* *Robust*? Computes standard errors which are correcting for heteroskedasticity. [Details here.](https://declaredesign.org/r/estimatr/articles/mathematical-notes.html)
+* We will compute *robust* standard errors which are correcting for heteroskedasticity. [Details here.](https://cran.r-project.org/web/packages/fixest/vignettes/standard_errors.html)
 
 * Notice the `predict` to get $\hat{s}$.
 ]
@@ -571,7 +572,7 @@ count: false
 
 .pull-right[
 ```{r,eval = FALSE}
-library(estimatr)
+library(fixest)
 # create a list of models
 mod <- list()
 
@@ -581,16 +582,16 @@ mod$ols <- lm(lnw ~ s, data = ak91)
 # IV: born in q4 is TRUE?
 # doing IV manually in 2 stages.
 mod[["1. stage"]] <- lm(s ~ q4, data = ak91)
-ak91$shat         <- predict(mod[["1. stage"]]) #<<
+ak91$shat         <- predict(mod[["1. stage"]])  
 mod[["2. stage"]] <- lm(lnw ~ shat, data = ak91)
 
 # run 2SLS
 # doing IV all in one go
 # notice the formula!
 # formula = y ~ x | z
-mod$`2SLS`  <- iv_robust(lnw ~ s | q4,
-                         data = ak91,
-                         diagnostics = TRUE)
+mod$`2SLS`  <- feols(lnw ~ 1 | s ~ q4,
+                     data = ak91,
+                     vcov = "hetero")
 ```
 ]
 
@@ -600,20 +601,19 @@ mod$`2SLS`  <- iv_robust(lnw ~ s | q4,
 
 .pull-left[
 ```{r ms1,echo = FALSE}
-glance_custom.iv_robust <- function(x){
-  f = x$diagnostic_first_stage_fstatistic
-  if (is.null(f)) {
-    return()
-  } else {
-    out <- tibble::tibble(`1. Stage F:` = round(f["value"],2))
-    return(out)
-  }
-}
-library(huxtable)
+# glance_custom.iv_robust <- function(x){
+#   f = x$diagnostic_first_stage_fstatistic
+#   if (is.null(f)) {
+#     return()
+#   } else {
+#     out <- tibble::tibble(`1. Stage F:` = round(f["value"],2))
+#     return(out)
+#   }
+# }
+
 tab = modelsummary(models = mod,
                        stars = TRUE,
-                       statistic = 'std.error',
-                       gof_omit = 'DF|Deviance|AIC|BIC|R2 Adj.|p.value|F$|se_type|statistic|Log.Lik.|Num.Obs.|N|RMSE',
+                       gof_omit = 'Std.Errors|DF|Deviance|AIC|BIC|R2 Adj.|p.value|se_type|statistic|Log.Lik.|Num.Obs.|N|RMSE',
          )
 tab
 ```
@@ -666,9 +666,9 @@ tab
 # we keep adding to our `mod` list:
 mod$ols_yr  <- update(mod$ols, . ~ . + yob_fct)  #  previous OLS model
 # add exogenous vars on both sides of the `|` !
-mod[["2SLS_yr"]] <- estimatr::iv_robust(lnw ~ s  + yob_fct | q4 + yob_fct, data = ak91, diagnostics = TRUE )  
+mod[["2SLS_yr"]] <- feols(lnw ~ yob_fct | s ~ q4, data = ak91, vcov = "hetero")  
 # use all quarters as IVs
-mod[["2SLS_all"]] <- estimatr::iv_robust(lnw ~ s  + yob_fct | qob_fct + yob_fct, data = ak91, diagnostics = TRUE  )
+mod[["2SLS_all"]] <- feols(lnw ~ yob_fct | s ~ qob_fct, data = ak91, vcov = "hetero")
 ```
 
 
@@ -687,7 +687,7 @@ names(rows)[c(3,5,6)] <- c("2SLS","2SLS_yr","2SLS_all")
 tab = modelsummary(models = mod[c("ols","2SLS","ols_yr","2SLS_yr","2SLS_all")],
                    stars = TRUE,
                    statistic = 'std.error',
-                   gof_omit = 'DF|Deviance|AIC|BIC|R2 Adj.|p.value|F$|se_type|statistic|Log.Lik.|Num.Obs.|N|RMSE',
+                   gof_omit = 'Std.Errors|DF|Deviance|AIC|BIC|R2 Adj.|p.value|F$|se_type|statistic|Log.Lik.|Num.Obs.|N|RMSE',
                    add_rows = rows,
                    coef_omit = 'yob_fct')
 
@@ -946,7 +946,7 @@ data(mroz,package = "wooldridge")
 mods = list()
 mods$OLS <- lm(lwage ~ educ, data = mroz)
 mods[['First Stage']] <- lm(educ ~ fatheduc, data = subset(mroz, inlf == 1))
-mods$IV  <- estimatr::iv_robust(lwage ~ educ | fatheduc, data = mroz)
+mods$IV  <- feols(lwage ~ 1 | educ ~ fatheduc, data = mroz, vcov = "hetero")
 ```
 
 ```{r,echo = FALSE}
@@ -965,7 +965,7 @@ coefs_IV = broom::tidy(mods$IV, conf.int = TRUE)
 
 bind_rows(
   coefs_ols %>% filter(term == "educ") %>% mutate(estimator = "OLS"),
-  coefs_IV %>% filter(term == "educ") %>% mutate(estimator = "IV")
+  coefs_IV %>% filter(term == "fit_educ") %>% mutate(estimator = "IV")
   ) %>%
   ggplot(aes(x=estimator, y=estimate, ymin=conf.low, ymax=conf.high)) +
   geom_hline(yintercept = 0.0, color = "red", size =1.5) +
@@ -1013,23 +1013,22 @@ $$
 
 We are worried that smoking behavior is correlated with a range of other health-related variables which are in $u$ and which could impact the birthweight of the child. So we look for an IV. Suppose we use the price of cigarettes (*cigprice*), assuming that the price of cigarettes is uncorrelated with factors in $u$. Let's run the first stage of *cigprice* on *packs* and then let's show the 2SLS estimates:
 
-
 ---
 
-# Weak Stuff
-
+# Weak Stuf (Different Package)
 
 ```{r bw}
+library(estimatr)
 data(bwght, package = "wooldridge")
 mods <- list()
 mods[["First Stage"]] <- lm(packs ~ cigprice, data = bwght)
-mods[["IV"]] <- estimatr::iv_robust(log(bwght) ~  packs | cigprice, data = bwght, diagnostics = TRUE)
+mods[["IV"]] <- estimatr::iv_robust(log(bwght) ~  packs | cigprice, data = bwght, 
+                                    diagnostics = TRUE)
 ```
 
 ```{r,echo = FALSE}
 modelsummary(mods, gof_omit = 'DF|Deviance|AIC|BIC|R2 Adj.|p.value|F$|se_type|statistic|Log.Lik.|Num.Obs.|N|RMSE')
 ```
-
 
 ---
 
@@ -1081,4 +1080,3 @@ background-position: 9% 19%
 | <a href="https://scpoecon.github.io/ScPoEconometrics">.ScPored[<i class="fa fa-link fa-fw"></i>] | Book |
 | <a href="http://twitter.com/ScPoEcon">.ScPored[<i class="fa fa-twitter fa-fw"></i>]                          | @ScPoEcon                         |
 | <a href="http://github.com/ScPoEcon">.ScPored[<i class="fa fa-github fa-fw"></i>]                          | @ScPoEcon                       |
-
