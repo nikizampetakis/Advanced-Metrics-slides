@@ -544,7 +544,7 @@ mod[["2. stage"]] <- lm(lnw ~ shat, data = ak91)
 # run 2SLS
 # doing IV all in one go
 # notice the formula!
-# formula = y ~ x | z
+# formula = y ~ 1 | x ~ z
 mod$`2SLS`  <- feols(lnw ~ 1 | s ~ q4,
                      data = ak91,
                      vcov = "hetero")
@@ -588,7 +588,7 @@ mod[["2. stage"]] <- lm(lnw ~ shat, data = ak91)
 # run 2SLS
 # doing IV all in one go
 # notice the formula!
-# formula = y ~ x | z
+# formula = y ~ 1 | x ~ z
 mod$`2SLS`  <- feols(lnw ~ 1 | s ~ q4,
                      data = ak91,
                      vcov = "hetero")
@@ -665,7 +665,7 @@ tab
 ```{r}
 # we keep adding to our `mod` list:
 mod$ols_yr  <- update(mod$ols, . ~ . + yob_fct)  #  previous OLS model
-# add exogenous vars on both sides of the `|` !
+# add exogenous vars!
 mod[["2SLS_yr"]] <- feols(lnw ~ yob_fct | s ~ q4, data = ak91, vcov = "hetero")  
 # use all quarters as IVs
 mod[["2SLS_all"]] <- feols(lnw ~ yob_fct | s ~ qob_fct, data = ak91, vcov = "hetero")
