@@ -1,25 +1,25 @@
 ---
 title: "ScPoEconometrics: Advanced"
 subtitle: "Panel Data"
-author: "Florian Oswald"
+author: "Nikiforos Zampetakis based on Florian Oswald's slides"
 date: "SciencesPo Paris </br> `r Sys.Date()`"
 output:
   xaringan::moon_reader:
     lib_dir: libs
-    css: [default, "../../css/scpo.css", "../../css/scpo-fonts.css"]
+    css: [default, "scpo.css", "scpo-fonts.css"]
     nature:
-      beforeInit: ["../../js/ru_xaringan.js"]
+      beforeInit: ["js/ru_xaringan.js"]
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
       ratio: "16:9"
     includes:
-      in_header: ["../../libs/partials/header.html"]
+      in_header: ["C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/libs/partials/header.html"]
 ---
 
 layout: true
 
-<div class="my-footer"><img src="../../img/logo/ScPo-shield.png" style="height: 60px;"/></div> 
+<div class="my-footer"><img src="./img/logo/ScPo-shield.png" style="height: 60px;"/></div> 
 
 ---
 
@@ -63,11 +63,7 @@ gofmap[clean == "R2", omit := FALSE]
 .pull-right[
 **Today**
 
-1. Talk about Mid-Term Exam! 😬
-
-2. Revisit the Ability Bias [in an App](https://floswald.shinyapps.io/ScPoMetrics-ability-bias/) 😎
-
-3. Introduce Panel Data
+* Introduce Panel Data
 
 ]
 
@@ -200,7 +196,7 @@ crime &= \beta_0 + \beta_1 police
 
 # Crime vs Arrest in Cross Section
 
-.left-thin[
+.pull-left[
 
 1. Subset data to 4 counties
 
@@ -223,7 +219,7 @@ ggplot(css,
 ```
 ]
 
-.right-wide[
+.pull-right[
 ```{r,echo = FALSE,fig.height=5}
 css = crime4 %>% 
   filter(county %in% c(1,3,145, 23))  # subset to 4 counties
@@ -330,16 +326,10 @@ dagify(CrimeRate ~ ProbArrest,
 ```
 
 ---
-background-image: url(../../img/crime-dag.png)
-background-size: 400px
-background-position: 93% 10%
-
-
-
 
 # Crime in a DAG
 
-.left-wide[
+.pull-left[
 **Fixed Characteristics**: vary by county
 
 * `LocalStuff` are things that describe the County, like geography, and other persistent features.
@@ -355,8 +345,9 @@ background-position: 93% 10%
 
 ] 
 
-.right-thin[
+.pull-right[
 
+![](C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/img/crime-dag.png)
 
 ]
 
@@ -397,14 +388,11 @@ You will often hear the terms *within* and *between* variation in panel data con
 ]
 
 ---
-background-image: url("https://media.giphy.com/media/3oKIPlLZEbEbacWqOc/giphy.gif")
-background-position: 90% 50%
-background-size: 300px
 
 # Within and Between Variation: Give us a Plot.
 
-.left-wide[
-```{r,echo = FALSE,message = FALSE,fig.height = 5}
+.pull-left[
+```{r,echo = FALSE,message = FALSE, fig.align='left', fig.height=6}
 pcolor = css %>% 
   group_by(county) %>%
   mutate(label = case_when(
@@ -424,6 +412,11 @@ pcolor
 ```
 ]
 
+.pull-right[
+
+![](https://media.giphy.com/media/3oKIPlLZEbEbacWqOc/giphy.gif)
+
+]
 
 ---
 
@@ -488,8 +481,8 @@ cowplot::plot_grid(p1,p2,align = "v")
 
 # Accounting for Grouped Data: Introducing the *Fixed Effect*
 
-.left-wide[
-```{r cri-dag2,echo = FALSE,message = FALSE,fig.height = 5}
+.pull-left[
+```{r cri-dag2,echo = FALSE,message = FALSE,fig.height = 5, fig.align='left', fig.width=5}
 coords <- list(
     x = c(ProbArrest = 1,Poverty = 1, Police = 1.5, County = 3, CrimeRate = 4),
     y = c(ProbArrest = 1,Police = 2.5, Poverty = 4, CrimeRate = 1, County = 4)
@@ -515,7 +508,7 @@ gdag1
 ```
 ]
 
-.right-thin[
+.pull-right[
 
 * Collect all group-specific time-invariant features in the factor `County`.
 
@@ -581,25 +574,29 @@ $$y_{it} = \beta_1 x_{it} + c_i + u_{it},\quad t=1,2,...T$$
 <br>
 <br>
 
-* Simplest approach: include a dummy variable for each group $i$. 
+$$y_{it} = \beta_1 x_{it} + c_i + u_{it},\quad t=1,2,...T$$
 
-* This is literally *controlling for county* i
+ Simplest approach: include a dummy variable for each group $i$.
 
-* Each $i$ has basically their own intercept $c_i$
+ This is literally *controlling for county* i
 
-* In `R` you achieve this like so:
+ Each $i$ has basically their own intercept $c_i$
+
+ In `R` you achieve this like so:
+
 
 ]
 
 .pull-right[
-<br>
-<br>
-$$y_{it} = \beta_1 x_{it} + c_i + u_{it},\quad t=1,2,...T$$
+
 
 ```{r}
 mod = list()
 mod$dummy <- lm(crmrte ~ prbarr + factor(county), css)  # i is the unit ID
-broom::tidy(mod$dummy)
+modelsummary::modelsummary(mod$dummy, statistic = 'std.error',
+                           stars = T,
+#                           coef_omit = "factor",
+                           gof_map = gofmap)
 ```
 
 ]
@@ -608,8 +605,20 @@ broom::tidy(mod$dummy)
 
 # Dummy Variable Regression
 
-.left-wide[
-```{r dummy,echo = FALSE,message = FALSE,fig.height = 5}
+.pull-left[
+
+* *Within* each county, now is a **negative** relationship!! 
+
+* Different intercepts (county 1 is the reference group), 
+
+* Unique slope coefficient $\beta$. (you observe that the lines are parallel).
+
+* We are shifting lines down from the reference group 1.
+
+]
+
+.pull-right[
+```{r dummy,echo = FALSE,message = FALSE}
 # not sure that's helpful
 css$pred <- predict(mod$dummy)  # get predicted line
 pcolor = css %>% 
@@ -624,16 +633,6 @@ pcolor = css %>%
        color = "County") 
 pcolor
 ```
-]
-
-.right-thin[
-* *Within* each county, now is a **negative** relationship!! 
-
-* Different intercepts (county 1 is be the reference group), 
-
-* Unique slope coefficient $\beta$. (you observe that the lines are parallel).
-
-* We are shifting lines down from the reference group 1.
 ]
 
 ---
@@ -654,7 +653,7 @@ lm(deltay ~ deltax, diff_data)
     
     
 ---
-background-image: url(../../img/crime-dag2.png)
+background-image: url(C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/img/crime-dag2.png)
 background-size: 300px
 background-position: 20% 99%
 
@@ -716,7 +715,7 @@ mod$demeaned <- lm(demeaned_crime ~ demeaned_prob, data = cdata)
 # The Within Transformation in `R`: Manual Solution
 
 
-.left-wide[
+.pull-left[
 We get this table:
 
 ```{r tab1,echo = FALSE}
@@ -724,13 +723,13 @@ library(huxtable)
 ht = modelsummary::modelsummary(mod[c("xsect","dummy","demeaned")],
                            statistic = 'std.error',
                            coef_omit = "factor",
-                           gof_map = gofmap,output = "huxtable")
+                           gof_map = gofmap, output = "huxtable")
 ht %>%
   set_text_color(row = c(4,6), col = c(3,4), value = 'red')
 ```
 ]
 
-.left-thin[
+.pull-right[
 
 * Estimate for `prbarr` is positive in the cross-section
 
@@ -785,12 +784,13 @@ mod$FE = fixest::feols(crmrte ~ prbarr | county, cdata)
 
 # Fixed Effects Estimation in `R`: use `fixest` 🙂
 
-.left-wide[
+.pull-left[
 ```{r,echo = FALSE}
+library(huxtable)
 ht = modelsummary::modelsummary(mod[c("xsect","dummy","demeaned","FE")],
                            statistic = 'std.error',
                            coef_omit = "factor",
-                           gof_map = gofmap,output = "huxtable")
+                           gof_map = gofmap, output = "huxtable")
 
 ht %>%
     set_text_color(row = c(4,6,4), col = c(3,4,5), value = 'red')
@@ -798,7 +798,7 @@ ht %>%
 ```
 ]
 
-.right-thin[
+.pull-right[
 <br>
 
 * Same estimates! 😅
@@ -816,14 +816,14 @@ ht %>%
 
 # Within Transformation Animated
 
-.left-wide[
+.pull-left[
 
-```{r,echo = FALSE}
-knitr::include_graphics("../../img/gifs/panel.gif")
-```
+
+![](C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/img/gifs/panel.gif)
+
 ]
 
-.right-thin[
+.pull-right[
 
 * The within transformation **centers** the data!
 
@@ -834,6 +834,24 @@ knitr::include_graphics("../../img/gifs/panel.gif")
 * Made by [Nick C Huntington-Klein](http://nickchk.com).  🙏
 
 ]
+---
+
+# Task: The effect of alcohole (sin) taxes on trafic fatalities (10 minutes)
+
+1. Load the data set `Fatalities` from the `AER` library and provide summary statistics.
+
+2. Create a fatality rate variable `Fatalities$fatal / Fatalities$pop * 10000`.
+
+3. Run a pooled regression of the beer taxes on fatality rate and plot the regression line. Interpret the coefficient for beer tax.
+
+4. Create two new variables: a dummy variable `punish` when there is a severe punishment (jail or community service) for drunk driving and a categorical variable `drinkagec` classifies states into four categories of minimal drinking age 18, 19, 20, 21 and older. Since the standard for the US is 21 years reset 21 as the reference category.
+Hint: use the `cut()` function to create the bins and the `relevel()` function to reset the reference categories.
+
+5. Run a regression with the the additional regressors: `drinkagec, punish, miles, unemp, log(income)`. Interpret the coefficient for beer tax.
+
+6. Run a fixed effects regression of the beer taxes on fatality rate and the other regressors using `feols` with `year` and `state` fixed effects. Interpret the beer tax coefficient.
+
+
 ---
 
 class: title-slide-final, middle
@@ -848,7 +866,7 @@ background-position: 9% 19%
 
 |                                                                                                            |                                   |
 | :--------------------------------------------------------------------------------------------------------- | :-------------------------------- |
-| <a href="mailto:florian.oswald@sciencespo.fr">.ScPored[<i class="fa fa-paper-plane fa-fw"></i>]               | florian.oswald@sciencespo.fr       |
+| <a href="mailto:nikiforos.zampetakis@sciencespo.fr">.ScPored[<i class="fa fa-paper-plane fa-fw"></i>]               | nikiforos.zampetakis@sciencespo.fr       |
 | <a href="https://github.com/ScPoEcon/Advanced-Metrics-slides">.ScPored[<i class="fa fa-link fa-fw"></i>] | Slides |
 | <a href="https://scpoecon.github.io/ScPoEconometrics">.ScPored[<i class="fa fa-link fa-fw"></i>] | Book |
 | <a href="http://twitter.com/ScPoEcon">.ScPored[<i class="fa fa-twitter fa-fw"></i>]                          | @ScPoEcon                         |
