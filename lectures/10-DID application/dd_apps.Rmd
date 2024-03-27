@@ -1,0 +1,218 @@
+---
+title: "ScPoEconometrics Advanced"
+subtitle: "Diff in Diff Applications"
+author: "Nikiforos Zampetakis"
+date: "SciencesPo Paris </br> `r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: [default, "scpo.css", "scpo-fonts.css"]
+    nature:
+      beforeInit: ["js/ru_xaringan.js"]
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+    includes:
+      in_header: "C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/libs/partials/header.html"
+---
+
+layout: true
+
+<div class="my-footer"><img src="./img/logo/ScPo-shield.png" style="height: 60px;"/></div> 
+
+---
+
+# Diff in Diff
+
+
+.pull-left[
+**Last Time**
+
+* Binary Dependent Variables
+
+* LPM
+
+* probit-logit models
+
+]
+
+.pull-right[
+**Today**
+
+* What economic research looks like today
+
+* Applications of the Diff-in-Diff methods
+
+]
+
+---
+
+# Flash Recap 2x2 DiD
+
+.pull-left[
+
+- 2 groups: Treated and Untreated
+
+- 2 periods: Before and after
+
+]
+
+.pull-right[
+
+Possible comparisons
+
+* Post vs Pre: Time trend problem
+
+* Treatment vs Control: Selection bias problem
+
+]
+<br>
+<br>
+Combine the two to get the DiD
+
+$$ \delta_{2x2}^{DD} = (\bar{y}_T^{post} - \bar{y}_T^{pre}) - (\bar{y}_C^{post} - \bar{y}_C^{pre}) $$
+<br>
+Crucial Assumption **Parallel Trends**
+
+* Differences between treatment and control are time invariant (don't affect the slope of the time trend).
+* Absent treatment the outcome between treatment and control groups would follow the same time trend.
+
+---
+
+# Regression Version DiD
+
+The typical regression model is
+
+$$Y_{it} = \beta_1 + \beta_2 Treat_i + \beta_3 Post_t + \beta_4 (Treat_i \times Post_t)_{it} + \epsilon_{it}$$
+<br>
+* Treat: dummy for treatment group.
+
+* Post: post-treatment dummy
+
+* $\beta_1$: pre-treatment mean in control group.
+
+* $\beta_2$: Treatment vs. Control comparison - captures selection bias (assumed to be
+time-invariant).
+
+* $\beta_3$: Pre vs. Post comparison, capturing time trend.
+
+* $\beta_4$: is the DD effect, identifying **ATT** (w. homogeneous TE)
+
+---
+
+# TWFE - DiD with Panel Data
+
+When we observe treated and untreated units for multiple time periods and units potentially experience treatment
+at different times the model becomes:
+
+$$Y_{it} = \alpha_i + \alpha_t + \delta_{DD} (Treat_i \times Post_t)_{it} + \epsilon_{it}$$
+<br>
+
+* $\alpha_i$: unit fixed effects
+
+* $\alpha_t$: time fixed effects
+
+<br>
+
+* Cluster standard errors at the unit level to allow for serial correlation n (Bertrand, Duflo and
+Mullainathan 2004).
+
+<br>
+
+Not sure exactly what $\delta_{DD}$ is and how it compares mean outcomes across units. New 
+expanding literature has dived in to this problem.
+
+
+---
+
+# The Power of the Pill: Oral Contraceptives and Women’s Career and Marriage Decisions, Goldin and Katz (2002)
+
+<br>
+<br>
+
+.pull-left[
+
+* Early 1970s in the US
+
+* Fraction of women entering graduate professional programs increase
+
+* Women's age at first marriage increases as well
+
+* **Why?**
+
+]
+
+.pull-right[
+
+* Answer by Goldin and Katz:
+
+* the diffusion of the **birth control pill** among the young women in late 1960s.
+
+* They use TWFE to prove that.
+
+]
+
+---
+
+# The Outcome in Graphs
+
+.pull-left[
+
+```{r bschool, echo=FALSE, out.width = '100%'}
+knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/10-DID application/img/first year female ratios.png")
+```
+
+]
+
+.pull-right[
+
+```{r marriage, echo=FALSE, out.width = '100%'}
+knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/10-DID application/img/marriage age.png")
+```
+
+]
+
+ 
+
+---
+
+# Randomization to the rescue
+
+If randomly assign who gets treated or not (e.g. by flipping a coin) people with high expected gains can not select to get treated.
+
+<br>
+<br>
+
+**NB**: The distrib. of $\delta_i$ is still the same in the study pop. $\implies$ there are still people with high and low effects.
+
+<br>
+<br>
+
+Missing data problem solved!!
+
+Whether $Y_i^1$ or $Y_i^0$ is observed for each $i$ is random and not a function of any factor that $i$ can act upon.
+
+$$\hat{\delta} = \delta^{ATE}$$
+
+---
+
+
+layout: false
+class: title-slide-final, middle
+background-image: url(../../img/logo/ScPo-econ.png)
+background-size: 250px
+background-position: 9% 19%
+
+# END
+
+
+
+
+|                                                                                                            |                                   |
+| :--------------------------------------------------------------------------------------------------------- | :-------------------------------- |
+| <a href="mailto:nikiforos.zampetakis@sciencespo.fr">.ScPored[<i class="fa fa-paper-plane fa-fw"></i>]               | nikiforos.zampetakis@sciencespo.fr       |
+| <a href="https://github.com/ScPoEcon/Advanced-Metrics-slides">.ScPored[<i class="fa fa-link fa-fw"></i>] | Slides |
+| <a href="https://scpoecon.github.io/ScPoEconometrics">.ScPored[<i class="fa fa-link fa-fw"></i>] | Book |
+| <a href="http://twitter.com/ScPoEcon">.ScPored[<i class="fa fa-twitter fa-fw"></i>]                          | @ScPoEcon                         |
+| <a href="http://github.com/ScPoEcon">.ScPored[<i class="fa fa-github fa-fw"></i>]                          | @ScPoEcon                       |

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ScPoEconometrics Advanced</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Nikiforos Zampetakis" />
+    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/5235085b15.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-41584331-6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-41584331-6');
+    </script>
+
+    <link rel="stylesheet" href="scpo.css" type="text/css" />
+    <link rel="stylesheet" href="scpo-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# ScPoEconometrics Advanced
+]
+.subtitle[
+## Diff in Diff Applications
+]
+.author[
+### Nikiforos Zampetakis
+]
+.date[
+### SciencesPo Paris </br> 2024-03-26
+]
+
+---
+
+
+layout: true
+
+&lt;div class="my-footer"&gt;&lt;img src="./img/logo/ScPo-shield.png" style="height: 60px;"/&gt;&lt;/div&gt; 
+
+---
+
+# Diff in Diff
+
+
+.pull-left[
+**Last Time**
+
+* Binary Dependent Variables
+
+* LPM
+
+* probit-logit models
+
+]
+
+.pull-right[
+**Today**
+
+* What economic research looks like today
+
+* Applications of the Diff-in-Diff methods
+
+]
+
+---
+
+# Flash Recap 2x2 DiD
+
+.pull-left[
+
+- 2 groups: Treated and Untreated
+
+- 2 periods: Before and after
+
+]
+
+.pull-right[
+
+Possible comparisons
+
+* Post vs Pre: Time trend problem
+
+* Treatment vs Control: Selection bias problem
+
+]
+&lt;br&gt;
+&lt;br&gt;
+Combine the two to get the DiD
+
+$$ \delta_{2x2}^{DD} = (\bar{y}_T^{post} - \bar{y}_T^{pre}) - (\bar{y}_C^{post} - \bar{y}_C^{pre}) $$
+&lt;br&gt;
+Crucial Assumption **Parallel Trends**
+
+* Differences between treatment and control are time invariant (don't affect the slope of the time trend).
+* Absent treatment the outcome between treatment and control groups would follow the same time trend.
+
+---
+
+# Regression Version DiD
+
+The typical regression model is
+
+`$$Y_{it} = \beta_1 + \beta_2 Treat_i + \beta_3 Post_t + \beta_4 (Treat_i \times Post_t)_{it} + \epsilon_{it}$$`
+&lt;br&gt;
+* Treat: dummy for treatment group.
+
+* Post: post-treatment dummy
+
+* `\(\beta_1\)`: pre-treatment mean in control group.
+
+* `\(\beta_2\)`: Treatment vs. Control comparison - captures selection bias (assumed to be
+time-invariant).
+
+* `\(\beta_3\)`: Pre vs. Post comparison, capturing time trend.
+
+* `\(\beta_4\)`: is the DD effect, identifying **ATT** (w. homogeneous TE)
+
+---
+
+# TWFE - DiD with Panel Data
+
+When we observe treated and untreated units for multiple time periods and units potentially experience treatment
+at different times the model becomes:
+
+`$$Y_{it} = \alpha_i + \alpha_t + \delta_{DD} (Treat_i \times Post_t)_{it} + \epsilon_{it}$$`
+&lt;br&gt;
+
+* `\(\alpha_i\)`: unit fixed effects
+
+* `\(\alpha_t\)`: time fixed effects
+
+&lt;br&gt;
+
+* Cluster standard errors at the unit level to allow for serial correlation n (Bertrand, Duflo and
+Mullainathan 2004).
+
+&lt;br&gt;
+
+Not sure exactly what `\(\delta_{DD}\)` is and how it compares mean outcomes across units. New 
+expanding literature has dived in to this problem.
+
+
+---
+
+# The Power of the Pill: Oral Contraceptives and Women’s Career and Marriage Decisions, Goldin and Katz (2002)
+
+&lt;br&gt;
+&lt;br&gt;
+
+.pull-left[
+
+* Early 1970s in the US
+
+* Fraction of women entering graduate professional programs increase
+
+* Women's age at first marriage increases as well
+
+* **Why?**
+
+]
+
+.pull-right[
+
+* Answer by Goldin and Katz:
+
+* the diffusion of the **birth control pill** among the young women in late 1960s.
+
+* They use TWFE to prove that.
+
+]
+
+---
+
+# The Outcome in Graphs
+
+.pull-left[
+
+&lt;img src="img/first year female ratios.png" width="100%" /&gt;
+
+]
+
+.pull-right[
+
+&lt;img src="img/marriage age.png" width="100%" /&gt;
+
+]
+
+ 
+
+---
+
+# Randomization to the rescue
+
+If randomly assign who gets treated or not (e.g. by flipping a coin) people with high expected gains can not select to get treated.
+
+&lt;br&gt;
+&lt;br&gt;
+
+**NB**: The distrib. of `\(\delta_i\)` is still the same in the study pop. `\(\implies\)` there are still people with high and low effects.
+
+&lt;br&gt;
+&lt;br&gt;
+
+Missing data problem solved!!
+
+Whether `\(Y_i^1\)` or `\(Y_i^0\)` is observed for each `\(i\)` is random and not a function of any factor that `\(i\)` can act upon.
+
+`$$\hat{\delta} = \delta^{ATE}$$`
+
+---
+
+
+layout: false
+class: title-slide-final, middle
+background-image: url(../../img/logo/ScPo-econ.png)
+background-size: 250px
+background-position: 9% 19%
+
+# END
+
+
+
+
+|                                                                                                            |                                   |
+| :--------------------------------------------------------------------------------------------------------- | :-------------------------------- |
+| &lt;a href="mailto:nikiforos.zampetakis@sciencespo.fr"&gt;.ScPored[&lt;i class="fa fa-paper-plane fa-fw"&gt;&lt;/i&gt;]               | nikiforos.zampetakis@sciencespo.fr       |
+| &lt;a href="https://github.com/ScPoEcon/Advanced-Metrics-slides"&gt;.ScPored[&lt;i class="fa fa-link fa-fw"&gt;&lt;/i&gt;] | Slides |
+| &lt;a href="https://scpoecon.github.io/ScPoEconometrics"&gt;.ScPored[&lt;i class="fa fa-link fa-fw"&gt;&lt;/i&gt;] | Book |
+| &lt;a href="http://twitter.com/ScPoEcon"&gt;.ScPored[&lt;i class="fa fa-twitter fa-fw"&gt;&lt;/i&gt;]                          | @ScPoEcon                         |
+| &lt;a href="http://github.com/ScPoEcon"&gt;.ScPored[&lt;i class="fa fa-github fa-fw"&gt;&lt;/i&gt;]                          | @ScPoEcon                       |
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="js/ru_xaringan.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
