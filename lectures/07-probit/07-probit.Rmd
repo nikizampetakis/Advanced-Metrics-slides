@@ -1,25 +1,25 @@
 ---
 title: "ScPoEconometrics: Advanced"
 subtitle: "Binary Response Models"
-author: "Florian Oswald"
+author: "Nikiforos Zampetakis based on Florian Oswald's slides"
 date: "SciencesPo Paris </br> `r Sys.Date()`"
 output:
   xaringan::moon_reader:
     lib_dir: libs
-    css: [default, "../../css/scpo.css", "../../css/scpo-fonts.css"]
+    css: [default,  "scpo.css", "scpo-fonts.css"]
     nature:
-      beforeInit: ["../../js/ru_xaringan.js"]
+      beforeInit: ["js/ru_xaringan.js"]
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
       ratio: "16:9"
     includes:
-      in_header: ["../../libs/partials/header.html"]
+      in_header: ["C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/libs/partials/header.html"]
 ---
 
 layout: true
 
-<div class="my-footer"><img src="../../img/logo/ScPo-shield.png" style="height: 60px;"/></div> 
+<div class="my-footer"><img src="./img/logo/ScPo-shield.png" style="height: 60px;"/></div> 
 
 ---
 
@@ -192,7 +192,6 @@ plot(factor(inlf) ~ age, data = mroz,
 ```
 
 ---
-class: inverse
 
 # Task 1 (5 Minutes)
 
@@ -211,7 +210,7 @@ class: inverse
 
 # Running the LPM
 
-.pull-left[
+.right-column[
 ```{r}
 LPM = lm(inlf ~ nwifeinc + educ + exper 
          + I(exper^2) + age +I(age^2) + kidslt6, mroz)
@@ -219,7 +218,7 @@ broom::tidy(LPM)
 ```
 ]
 
-.pull-right[
+.left-column[
 * **identical** to our previous linear regression models
 
 * Just `inlf` takes on only two values, 0 or 1. 
@@ -261,7 +260,7 @@ abline(a = 1, b = 0, col = "red",lw = 3)
 
 # LPM in Saturated Model: No Problem!
 
-.left-wide[
+.right-column[
 ```{r,message=FALSE,warning=FALSE}
 library(dplyr)
 mroz %<>% 
@@ -277,7 +276,7 @@ broom::tidy(LPM_saturated)
 
 ]
 
-.right-thin[
+.left-column[
 * *saturated model* : only have dummy explanatory variables 
 
 * Each class: $p(x)$ *within that cell*. 
@@ -289,7 +288,7 @@ broom::tidy(LPM_saturated)
 
 # LPM in Saturated Model: No Problem!
 
-.left-wide[
+.pull-left[
 ```{r saturated,message=FALSE,warning=FALSE,fig.height = 5,echo = FALSE}
 library(ggplot2)
 mroz$pred <- predict(LPM_saturated)
@@ -301,7 +300,7 @@ ggplot(mroz[order(mroz$pred),], aes(x = 1:nrow(mroz),y = pred,color = classes)) 
 ```
 ]
 
-.right-thin[
+.pull-right[
 
 * Each line segment: $p(x)$ *within that cell*. 
 
@@ -311,7 +310,6 @@ ggplot(mroz[order(mroz$pred),], aes(x = 1:nrow(mroz),y = pred,color = classes)) 
 
 
 ---
-class: inverse
 
 # Task 2 (10 Minutes): Saturated LPM
 
@@ -356,7 +354,7 @@ $$
 
 # $G$: **probit** and **logit**
 
-.left-wide[
+.pull-left[
 ```{r cdfs,echo = FALSE,fig.height = 5}
 ggplot(data.frame(x = c(-5,5)), aes(x=x)) + 
   stat_function(fun = pnorm, aes(colour = "Probit"), size = 1) + 
@@ -367,7 +365,7 @@ ggplot(data.frame(x = c(-5,5)), aes(x=x)) +
 ```
 ]
 
-.right-thin[
+.pull-right[
 
 <br>
 For both **probit** and **logit** we see that:
@@ -484,12 +482,29 @@ glms$logitAvg <- mfx::logitmfx(formula = f,
 
 # Interpretation
 
+.pull-left[
+
 ```{r,echo = FALSE}
 
-modelsummary::modelsummary(glms, 
-                           stars = TRUE,
-                           gof_omit = "AIC|BIC")
+# modelsummary::modelsummary(glms,
+#                            statistic = NULL,
+#                            stars = TRUE,
+#                            gof_omit = "AIC|BIC")
+
+glms$probitMean
 ```
+]
+
+.pull-right[
+
+```{r, echo=FALSE}
+
+glms$probitAvg
+
+```
+
+]
+
 
 ---
 class: separator, middle
@@ -544,7 +559,7 @@ prop.table(table(true = mroz$inlf, pred = round(fitted(glms$probit))))
 
 # GOF in Binary Models: ROC Curves
 
-.left-wide[
+.pull-left[
 ```{r,fig.height = 3}
 library(ROCR)
 pred <- prediction(fitted(glms$probit), mroz$inlf)
@@ -555,7 +570,7 @@ abline(0,1,lty = 2, col = "red")
 ```
 ]
 
-.right-thin[
+.pull-right[
 <br>
 <br>
 * Best accuracy at around $c=0.6$
@@ -565,7 +580,6 @@ abline(0,1,lty = 2, col = "red")
 ]
 
 ---
-class: inverse
 
 # Task 3 (10 Minutes): `SwissLabor`
 
@@ -595,7 +609,7 @@ background-position: 9% 19%
 
 |                                                                                                            |                                   |
 | :--------------------------------------------------------------------------------------------------------- | :-------------------------------- |
-| <a href="mailto:florian.oswald@sciencespo.fr">.ScPored[<i class="fa fa-paper-plane fa-fw"></i>]               | florian.oswald@sciencespo.fr       |
+| <a href="mailto:nikiforos.zampetakis@sciencespo.fr">.ScPored[<i class="fa fa-paper-plane fa-fw"></i>]               | nikiforos.zampetakis@sciencespo.fr       |
 | <a href="https://github.com/ScPoEcon/Advanced-Metrics-slides">.ScPored[<i class="fa fa-link fa-fw"></i>] | Slides |
 | <a href="https://scpoecon.github.io/ScPoEconometrics">.ScPored[<i class="fa fa-link fa-fw"></i>] | Book |
 | <a href="http://twitter.com/ScPoEcon">.ScPored[<i class="fa fa-twitter fa-fw"></i>]                          | @ScPoEcon                         |

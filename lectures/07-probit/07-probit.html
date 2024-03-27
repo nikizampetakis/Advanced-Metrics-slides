@@ -3,7 +3,7 @@
   <head>
     <title>ScPoEconometrics: Advanced</title>
     <meta charset="utf-8" />
-    <meta name="author" content="Florian Oswald" />
+    <meta name="author" content="Nikiforos Zampetakis based on Florian Oswald’s slides" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <script src="libs/kePrint/kePrint.js"></script>
@@ -20,24 +20,32 @@
       gtag('config', 'UA-41584331-6');
     </script>
 
-    <link rel="stylesheet" href="../../css/scpo.css" type="text/css" />
-    <link rel="stylesheet" href="../../css/scpo-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="scpo.css" type="text/css" />
+    <link rel="stylesheet" href="scpo-fonts.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
+.title[
 # ScPoEconometrics: Advanced
+]
+.subtitle[
 ## Binary Response Models
-### Florian Oswald
-### SciencesPo Paris </br> 2020-11-24
+]
+.author[
+### Nikiforos Zampetakis based on Florian Oswald’s slides
+]
+.date[
+### SciencesPo Paris </br> 2024-03-27
+]
 
 ---
 
 
 layout: true
 
-&lt;div class="my-footer"&gt;&lt;img src="../../img/logo/ScPo-shield.png" style="height: 60px;"/&gt;&lt;/div&gt; 
+&lt;div class="my-footer"&gt;&lt;img src="./img/logo/ScPo-shield.png" style="height: 60px;"/&gt;&lt;/div&gt; 
 
 ---
 
@@ -196,7 +204,6 @@ plot(factor(inlf) ~ age, data = mroz,
 &lt;img src="07-probit_files/figure-html/unnamed-chunk-1-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
-class: inverse
 
 # Task 1 (5 Minutes)
 
@@ -215,7 +222,7 @@ class: inverse
 
 # Running the LPM
 
-.pull-left[
+.right-column[
 
 ```r
 LPM = lm(inlf ~ nwifeinc + educ + exper 
@@ -224,7 +231,7 @@ broom::tidy(LPM)
 ```
 
 ```
-## # A tibble: 8 x 5
+## # A tibble: 8 × 5
 ##   term         estimate std.error statistic  p.value
 ##   &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
 ## 1 (Intercept)  0.322     0.486       0.662  5.08e- 1
@@ -238,7 +245,7 @@ broom::tidy(LPM)
 ```
 ]
 
-.pull-right[
+.left-column[
 * **identical** to our previous linear regression models
 
 * Just `inlf` takes on only two values, 0 or 1. 
@@ -275,7 +282,7 @@ broom::tidy(LPM)
 
 # LPM in Saturated Model: No Problem!
 
-.left-wide[
+.right-column[
 
 ```r
 library(dplyr)
@@ -291,7 +298,7 @@ broom::tidy(LPM_saturated)
 ```
 
 ```
-## # A tibble: 6 x 5
+## # A tibble: 6 × 5
 ##   term               estimate std.error statistic  p.value
 ##   &lt;chr&gt;                 &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
 ## 1 (Intercept)          0.611     0.0277    22.0   2.98e-83
@@ -304,7 +311,7 @@ broom::tidy(LPM_saturated)
 
 ]
 
-.right-thin[
+.left-column[
 * *saturated model* : only have dummy explanatory variables 
 
 * Each class: `\(p(x)\)` *within that cell*. 
@@ -316,11 +323,11 @@ broom::tidy(LPM_saturated)
 
 # LPM in Saturated Model: No Problem!
 
-.left-wide[
+.pull-left[
 &lt;img src="07-probit_files/figure-html/saturated-1.svg" style="display: block; margin: auto;" /&gt;
 ]
 
-.right-thin[
+.pull-right[
 
 * Each line segment: `\(p(x)\)` *within that cell*. 
 
@@ -330,7 +337,6 @@ broom::tidy(LPM_saturated)
 
 
 ---
-class: inverse
 
 # Task 2 (10 Minutes): Saturated LPM
 
@@ -375,11 +381,11 @@ $$
 
 # `\(G\)`: **probit** and **logit**
 
-.left-wide[
+.pull-left[
 &lt;img src="07-probit_files/figure-html/cdfs-1.svg" style="display: block; margin: auto;" /&gt;
 ]
 
-.right-thin[
+.pull-right[
 
 &lt;br&gt;
 For both **probit** and **logit** we see that:
@@ -446,9 +452,9 @@ modelsummary::modelsummary(list("probit" = probit,"logit" = logit))
    &lt;td style="text-align:center;"&gt; -0.020 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.006) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.009) &lt;/td&gt;
+   &lt;td style="text-align:left;box-shadow: 0px 1.5px"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (0.006) &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (0.009) &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Num.Obs. &lt;/td&gt;
@@ -469,6 +475,16 @@ modelsummary::modelsummary(list("probit" = probit,"logit" = logit))
    &lt;td style="text-align:left;"&gt; Log.Lik. &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; -512.442 &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; -512.431 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; F &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.828 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.858 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; RMSE &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.49 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.49 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -550,117 +566,41 @@ glms$logitAvg &lt;- mfx::logitmfx(formula = f,
 
 # Interpretation
 
-&lt;table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
- &lt;thead&gt;
-  &lt;tr&gt;
-   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; probit &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; logit &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; probitMean &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; probitAvg &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; logitMean &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; logitAvg &lt;/th&gt;
-  &lt;/tr&gt;
- &lt;/thead&gt;
-&lt;tbody&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; (Intercept) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 2.080*** &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 3.394*** &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.309) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.516) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; age &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -0.035*** &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -0.057*** &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -0.014*** &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -0.013*** &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -0.014*** &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -0.013*** &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.007) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.011) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.003) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.002) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.003) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.003) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; kidslt6 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -0.800*** &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -1.313*** &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -0.314*** &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -0.290*** &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -0.322*** &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -0.292*** &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.111) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.188) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.044) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.036) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.046) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.047) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; nwifeinc &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -0.011*** &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -0.019*** &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -0.004*** &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -0.004*** &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -0.005*** &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -0.004*** &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.004) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.007) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.002) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.001) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.002) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; (0.002) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Num.Obs. &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 753 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 753 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 753 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 753 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 753 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 753 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Log.Lik. &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -478.395 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -478.377 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -478.395 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -478.395 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -478.377 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; -478.377 &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;tfoot&gt;
-&lt;tr&gt;
-&lt;td style="padding: 0; border:0;" colspan="100%"&gt;
-&lt;sup&gt;&lt;/sup&gt; * p &amp;lt; 0.1, ** p &amp;lt; 0.05, *** p &amp;lt; 0.01&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tfoot&gt;
-&lt;/table&gt;
+.pull-left[
+
+
+```
+## Call:
+## mfx::probitmfx(formula = f, data = mroz, atmean = TRUE)
+## 
+## Marginal Effects:
+##               dF/dx  Std. Err.       z     P&gt;|z|    
+## age      -0.0136710  0.0026087 -5.2406 1.601e-07 ***
+## kidslt6  -0.3139105  0.0435115 -7.2144 5.416e-13 ***
+## nwifeinc -0.0044957  0.0016463 -2.7308  0.006317 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+]
+
+.pull-right[
+
+
+```
+## Call:
+## mfx::probitmfx(formula = f, data = mroz, atmean = FALSE)
+## 
+## Marginal Effects:
+##               dF/dx  Std. Err.       z     P&gt;|z|    
+## age      -0.0126459  0.0022822 -5.5412 3.005e-08 ***
+## kidslt6  -0.2903722  0.0358252 -8.1053 5.264e-16 ***
+## nwifeinc -0.0041586  0.0015000 -2.7724  0.005564 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+]
+
 
 ---
 class: separator, middle
@@ -728,7 +668,7 @@ prop.table(table(true = mroz$inlf, pred = round(fitted(glms$probit))))
 
 # GOF in Binary Models: ROC Curves
 
-.left-wide[
+.pull-left[
 
 ```r
 library(ROCR)
@@ -739,10 +679,10 @@ plot(performance(pred,"tpr","fpr"))
 abline(0,1,lty = 2, col = "red")
 ```
 
-&lt;img src="07-probit_files/figure-html/unnamed-chunk-11-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="07-probit_files/figure-html/unnamed-chunk-12-1.svg" style="display: block; margin: auto;" /&gt;
 ]
 
-.right-thin[
+.pull-right[
 &lt;br&gt;
 &lt;br&gt;
 * Best accuracy at around `\(c=0.6\)`
@@ -752,7 +692,6 @@ abline(0,1,lty = 2, col = "red")
 ]
 
 ---
-class: inverse
 
 # Task 3 (10 Minutes): `SwissLabor`
 
@@ -782,7 +721,7 @@ background-position: 9% 19%
 
 |                                                                                                            |                                   |
 | :--------------------------------------------------------------------------------------------------------- | :-------------------------------- |
-| &lt;a href="mailto:florian.oswald@sciencespo.fr"&gt;.ScPored[&lt;i class="fa fa-paper-plane fa-fw"&gt;&lt;/i&gt;]               | florian.oswald@sciencespo.fr       |
+| &lt;a href="mailto:nikiforos.zampetakis@sciencespo.fr"&gt;.ScPored[&lt;i class="fa fa-paper-plane fa-fw"&gt;&lt;/i&gt;]               | nikiforos.zampetakis@sciencespo.fr       |
 | &lt;a href="https://github.com/ScPoEcon/Advanced-Metrics-slides"&gt;.ScPored[&lt;i class="fa fa-link fa-fw"&gt;&lt;/i&gt;] | Slides |
 | &lt;a href="https://scpoecon.github.io/ScPoEconometrics"&gt;.ScPored[&lt;i class="fa fa-link fa-fw"&gt;&lt;/i&gt;] | Book |
 | &lt;a href="http://twitter.com/ScPoEcon"&gt;.ScPored[&lt;i class="fa fa-twitter fa-fw"&gt;&lt;/i&gt;]                          | @ScPoEcon                         |
@@ -791,7 +730,7 @@ background-position: 9% 19%
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
-<script src="../../js/ru_xaringan.js"></script>
+<script src="js/ru_xaringan.js"></script>
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
 "highlightLines": true,
@@ -837,6 +776,19 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
 (function() {
   "use strict"
   // Replace <script> tags in slides area to make them executable
