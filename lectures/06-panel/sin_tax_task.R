@@ -22,11 +22,15 @@ skim(Fatalities)
 
 Fatalities$fatal_rate <- Fatalities$fatal / Fatalities$pop * 10000
 
+Fatalities = Fatalities %>% mutate(fatal_rate = fatal/pop*1000)
+
 ####################
 # Pooled regression
 ####################
 
 lm1 = lm(fatal_rate ~ beertax, Fatalities)
+
+summary(lm1)
 
 #Plot the regression line
 
@@ -54,7 +58,7 @@ Fatalities = Fatalities %>% mutate(punish = if_else((jail == "yes" | service == 
 #Create a categorical variable for the minimum drinking age at each state
 
 Fatalities = Fatalities %>% 
-  mutate(drinkagec = cut(Fatalities$drinkage,breaks = 18:22, include.lowest = TRUE, right = FALSE))
+  mutate(drinkagec = cut(drinkage,breaks = 18:22, include.lowest = TRUE, right = FALSE))
 
 Fatalities$drinkagec = relevel(Fatalities$drinkagec, "[21,22]")
 
