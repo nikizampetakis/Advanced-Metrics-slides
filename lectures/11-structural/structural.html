@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ScPoEconometrics Advanced</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Nikiforos Zampetakis" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/5235085b15.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-41584331-6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-41584331-6');
+    </script>
+
+    <link rel="stylesheet" href="scpo.css" type="text/css" />
+    <link rel="stylesheet" href="scpo-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# ScPoEconometrics Advanced
+]
+.subtitle[
+## Structural Models
+]
+.author[
+### Nikiforos Zampetakis
+]
+.date[
+### SciencesPo Paris </br> 2024-04-08
+]
+
+---
+
+
+layout: true
+
+&lt;div class="my-footer"&gt;&lt;img src="./img/logo/ScPo-shield.png" style="height: 60px;"/&gt;&lt;/div&gt; 
+
+---
+
+
+
+# Structural Models
+
+
+.pull-left[
+
+*Until Now*
+
+* Different methods to find causal effects (DiD, Panel, IV)
+
+* Recent applications of these methods to answer relevant (?) questions.
+
+]
+
+.pull-right[
+
+*Today*
+
+* Different way of finding causal effects + applications
+]
+
+&lt;br&gt;
+&lt;br&gt;
+
+To make this slide deck I have extensively used materials from [Attila Gyetvai](https://attilagyetvai.com/), [Philip Haile](https://sites.google.com/view/philhaile/home) and [Allan Collard-Wexler](https://sites.duke.edu/collardwexler/)
+
+---
+
+# Models are Everywhere
+
+* Arguments about causal effects depend on counterfactuals
+
+* **A model is necessary to define and explore counterfactuals of interest.**
+  * Without a model how should I know which are the other factors I have to keep fixed.
+  
+* In other disciplines where the construction of "formal" models is not a tradition they have invented new ones: Rubin Causal Model (statistics), DAG (computer science)
+
+* I think [Gauti Eggertsson](https://sites.google.com/site/gautieggertsson/home) in his [tweet](https://twitter.com/GautiEggertsson/status/1657580831861354496) explains the need for a model quite nice.
+
+.pull-left[
+
+&lt;img src="img/eggertsson1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+]
+
+.pull-right[
+
+&lt;img src="img/eggertsson2.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+]
+
+* The model may be simple or complicated, may involve economics or only hypothesized probabilistic relationships **but it is always there!!**
+
+---
+
+# A Simple Labor Supply Model
+
+* **Research Question**: what is the effect of wages `\(w\)` on hours worked `\(h\)`?
+
+* Imagine we observe data `\((w_i, h_i)\)` for `\(i \in \{1, \dots, N\}\)` workers.
+
+* What is the simplest model that could explain this behavior?
+
+`$$\max_{c,h} u(c,h) = c - \gamma h^{\alpha} \\
+s.t. \;\; c &lt; hw$$`
+
+* Taking the first order condition with respect to `\(h\)` and `\(c\)` we get
+
+`$$h = (\gamma\alpha)^{\frac{1}{1-\alpha}}w^{\frac{1}{\alpha-1}}$$`
+* Taking logs we get the **reduced form model**
+
+`$$log(h) = \frac{1}{1-\alpha}log(\gamma\alpha) + \underbrace{\frac{1}{\alpha-1}}_\text{wage elasticity of labor supply} log(w)$$`
+
+* I can't always get the structural parameters from the reduced form model.
+
+
+---
+
+# Program Evaluation Methods
+&lt;br&gt;
+
+* The set of methods called Program Evaluation methods (DiD, Randomized IV, RDD) follows the randomized control trial paradigm.
+&lt;br&gt;
+  * Trying to **abstract from a specific economic model** and get **causal effects through exploitation of the statistical properties** of an estimator.
+  * No economics in there.
+  
+&lt;br&gt;
+
+* But **models are always there**
+
+&lt;br&gt; 
+
+* Since the '10s **The Great Unification**
+  * Use rigorously a Program Evaluation method to properly identify and estimate a causal effect and then provide a parsimonious model that can explain the the economics behind the causal effect
+
+
+---
+
+# Why do Structural (Nevo and Whinston, 2010)?
+
+&lt;br&gt;
+
+## External Validity
+
+* External validity under the Policy Evaluation methods depends on many prior events where the policy or the change in the economic environment is exogenous (either through RCTs or quasi-random).
+
+&lt;br&gt;
+
+* Might not be the case: The change has never occurred before or not under the same conditions.
+
+&lt;br&gt;
+
+* Then structural analysis can match observed past behavior to a model and get the underlying parameters
+  * Then the model can be used to predict the responses to possibles changes even those that have never happened before assuming that the parameters don't change
+
+---
+
+# Why do Structural (Nevo and Whinston, 2010)?
+
+## Welfare
+
+* Even if I could predict the prices for a given policy I can't compare the welfare implications of the proposed policy.
+
+&lt;br&gt;
+
+
+* If we could see previous examples of people or firms choosing between "before" and "after" outcomes for a given policy then estimation of the full model isn't needed.
+
+&lt;br&gt;
+
+* Since we want to predict what are the welfare outcomes of a proposed policy we don't have the choices between "before" and "after"
+
+&lt;br&gt;
+
+* We can use observed "other" choices to estimate the full model and then use it to predict what are the welfare effects of the proposed policy.
+
+
+
+---
+
+# Analysis Based on Structural Model
+
+* We'll see how we build and estimate a structural model and how we can use it to formulate counterfactuals through an example.
+
+* Consider the problem faced by an antitrust authority (DOJ, FTC, EC AD) when there is a suspected cartel in a market.
+
+* The antitrust authority can request detailed data from the suspected firms but still proof of legal violation is not possible. Why?
+
+* A possible increase in prices during the suspected period can be the outcome of the cartel or of a negative cost shock.
+  * How do we disentangle the two?
+  
+* Today: compare the observed price - cost margins with the ones predicted by a model of competition.
+
+* In general: large literature on cartel detection (much more advanced math/metrics and computational skills needed).
+
+---
+
+# Why we go structural?
+
+* No market is similar to an other.
+
+&lt;br&gt;
+
+*  Retail gasoline market with luxury bags market? 
+
+&lt;br&gt;
+
+*  The luxury brand market today vs the luxury market 70 years ago?
+
+&lt;br&gt;
+
+* There are no good prior events to use as a control group. I need a structural model.
+
+&lt;br&gt;
+
+Let's build a simple model of a market.
+
+---
+
+# The Market
+
+* We will concentrate in the market for Over The Counter Painkillers in the US. (Data graciously provided by Allan Collard-Wexler)
+
+&lt;br&gt;
+
+* These are real data collected from 73 stores across the US for 48 weeks. We observe prices and sales for the three biggest brands in the US + the private label.
+
+&lt;br&gt;
+
+* First we need to think how the firms behave in this market.
+  * How do the consumers perceive the products? As complements or substitutes?
+  * Are they perfect or imperfect substitutes? Which characteristics would they make them imperfect substitutes?
+  * How firms decide their prices? (Cournot vs Bertrand)
+  
+* Let's see what we can get from the data
+
+---
+
+# Task 1: Data Exploration (1.5 Minutes)
+
+1. Load the data 
+
+
+```r
+otc = read_csv(url("https://raw.githubusercontent.com/nikizampetakis/Advanced-Metrics-slides/master/lectures/11-structural/otc_data_merged.csv"))
+```
+
+&lt;br&gt;
+
+2. skim the data. How many different `mg` types are there? Is there any other variable known to the consumers that could make them perceive the products as different?
+
+&lt;br&gt;
+
+3. Do different firms have different prices when they do not do discounts? for the same product type? between different types?
+
+---
+
+# The OTC painkiller Market in the US
+
+* We see that the firms sell pills with different quantities for the active substance which indicates that consumers value this differentiation.
+
+&lt;br&gt;
+
+* Supply of both 50 and 100 mg products by the private label might indicate that consumers have strong preferences over the different sizes.
+
+&lt;br&gt;
+
+* We see that **firms have different prices between each other for the same product** and between their own products.
+  * This is a key characteristic of a differentiated products **Nash-Bertrand pricing model** (Why?)
+  
+&lt;br&gt;
+
+* So driven by the data we will make the assumption that the firms follow a Nash-Bertrand model to set their prices.
+
+---
+
+# Nash-Bertrand
+
+* Each firm sells differentiated products and compete on prices.
+  * We assume that each product is a different segment in a firm and each segment tries to maximize its own profits.
+
+* Their cost function for a product `\(j\)` is: `\(C_{jt} = c_{jt}q_{jt}\)`
+
+*Their profits in a period `\(t\)`, where `\(\mathbf{p}\)` is a vector of all the prices in the market are:
+
+`$$\pi_{jt} = (p_{jt} - c_{jt})q_{jt}(\mathbf{p})$$`
+
+* The firm tries to find the price that will maximize its profits. Take the FOC.
+
+`$$\frac{\partial \pi_{jt}}{\partial p_{jt}} = q_{jt}(\mathbf{p}) + \frac{\partial q_{jt}(\mathbf{p})}{\partial p_{jt}}(p_{jt} - c_{jt}) = 0$$`
+
+* Doing the math (on the board) we get that the price-cost margin of the firm is:
+
+`$$\frac{p_{jt} - c_{jt}}{p_{jt}} = -\frac{1}{\eta_{jj}}$$`
+* `\(\eta_{jj}\)` is the own price elasticity of demand. How can I get the price elasticity?
+
+---
+
+# Demand Model
+
+* I need a demand model to get the price elasticity.
+
+&lt;br&gt;
+
+* Berry, Levinshon and Pakes (1995) wrote the workhorse demand model for differentiated products.
+
+&lt;br&gt;
+
+* **Key assumption 1**: Each consumer chooses the bundle that maximizes her utility and buy only one product.
+
+---
+
+# Utility Function
+
+* There are `\(J\)` products in the market with `\(J \in \{0, 1, \dots, J\}\)`
+  * 0 is the outside good.
+
+* Each consumer `\(i\)` has a utility function of the form:
+
+`$$U_{ij} = \delta_j + \epsilon_{ij}$$`
+
+* `\(\delta_j\)` is the mean utility of product `\(j\)`
+* `\(\epsilon_{ij}\)` is an idiosyncratic taste for product `\(j\)`.
+
+* **Key assumption 2**: `\(\epsilon_{ij} \sim\)` `\(Logit(\epsilon)\)`.
+
+---
+
+# Logit Assumption
+
+* Logit assumption is important because we can write the probability of a consumer to buy product `\(j\)` as:
+
+`$$Pr(U_{ij} \geq U_{ik} \; \forall \; k) = \frac{exp(\delta_j)}{\sum_{k = 0, 1, \dots, J} exp(\delta_j)}$$`
+* Since each consumer buys only 1 product this `\(Prob\)` corresponds to product's `\(j\)` **market share** `\(s_j\)` as well.
+  * **Important**: If I have a measure of the market size (how many potential consumers are in the market) **I can compute market shares from the data** `\(\frac{q_j}{M} = s_j\)`.
+
+* I can compute the share of the outside good `\(s_0\)` as: `\(s_0 = 1 - \sum_{j \in \{{1\dots J}\}}s_j\)`.
+
+---
+
+# Mean Utility
+
+* **Key assumption 3**: `\(\delta_j\)` takes the form
+
+`$$\sum_l \beta_l x_{lj} - ap_j + \xi_j$$`
+* `\(x_{lj}\)`: is the characteristic `\(l\)` for product `\(j\)`.
+
+* `\(p_j\)`: is the price of product `\(j\)`.
+
+* `\(\xi_j\)`: is product quality as perceived by consumers unobserved by the econometrician.
+
+* **Key assumption 4**: `\(\delta_0 = 0\)`
+
+* Now I have all the components to estimate the parameters of the demand function.
+
+---
+
+# Berry inverssion
+
+* Quick reminder: `\(e^0 = 1\)`,  `\(log(\frac{a}{b}) = log(a) - log(b)\)`,  `\(log(1) = 0\)`
+
+Berry used these to rules to simplify the format of the demand function.
+
+`$$s_j = \frac{exp(\sum_l \beta_l x_{lj} - ap_j + \xi_j)}{1 + \sum_{k = 1, \dots, J} exp(\sum_l \beta_l x_{lj} - ap_j + \xi_j)}$$`
+`$$s_0 = \frac{1}{1 + \sum_{k = 1, \dots, J} exp(\sum_l \beta_l x_{lj} - ap_j + \xi_j)}$$`
+Taking logs (on te board) we get:
+
+`$$log(sj) - log(s_0) = \sum_l \beta_l x_{lj} - ap_j + \xi_j$$`
+
+* I know everything! **I can estimate this with OLS**.
+
+---
+
+# Price endogeneity
+
+* When firms set prices they take into consideration the unobserved quality component `\(\xi_j\)` hence `\(\mathbb{E}[\xi_j|p_j] \neq 0\)`.
+  * Then `\(a\)` will be a biased estimate.
+  
+* I need and instrument to fix that. What can I use as an instrument?
+
+--
+
+* Something that will shift prices but not how consumers perceive product quality.
+
+* Usual instruments: 
+  * Variation in cost components (cost shifters)
+  * Sums of competitors characteristics - BLP instruments (markup shifters)
+  * if we can use market fixed effects then spatially correlated cost shocks - Hausman-Nevo instruments.
+  
+* In our case (OTC market) we can use product and market fixed effects. Then our `\(\xi_{jmt}\)` will be `\(\xi_{jmt} = \xi_{j} + \xi_{m} + \Delta\xi_{jmt}\)`.
+  * Then prices in other markets are correlated with the price in market `\(m\)` because cost shocks are the same across space but uncorrelated with        `\(\Delta\xi_{jmt}\)` since we have controled for market fixed effects.
+
+---
+
+# Task 2: Demand estimation (2 Minutes)
+
+1. Assuming each store is a  different market compute the market shares and the share of the outside good.
+  * **Hint**: `count` is number of customers entering a store `\(\rightarrow\)` the market size.
+  
+2. compute `delta` as `\(log(s_j) - log(s_0)\)`.
+
+3. Run an OLS regression of `delta` on `price_`, `prom_` and `size`. Interpret the coefficients. Is there something peculiar?
+
+4. Create a `market_id` variable where market is defined as a unique store-week combination.
+  * **Hint**: use `cur_group_id()` to give a unique identifier to a group   .
+  
+5. Run the same regression with product (`brand_name`) and market fixed effects.
+
+6. Run a 2sls regression of `delta` on `price_`, `prom_` and `size` using as IV the variable `avoutprice` the average price in the other markets.
+
+7. Run the same 2sls regression with product (`brand_name`) and market fixed effects.
+
+8. compute the own price elasticity for each product using the formula `\(\hat{a}p_j(1 - s_j)\)` using the price coefficient form the last regression.
+
+---
+
+# Task 3: Compare price cost margins (2 Minutes)
+
+1. Compute the price-cost margins `pcm` from the data using the variable `cost_`.
+
+&lt;br&gt;
+
+2. Compute the implied price - cost margins `pcm_b` from the Bertrand model we discussed before.
+  * **Hint**: the formula is $ \frac{1}{|\eta_{jj}|}$.
+  
+&lt;br&gt;
+
+3. Compute the average of `pcm` and `pcm_b` over the whole sample and by `brand_name`. What do you see? Can we reach a concmulsion about the competition in the market?
+
+---
+layout: false
+class: title-slide-final, middle
+background-image: url(../../img/logo/ScPo-econ.png)
+background-size: 250px
+background-position: 9% 19%
+
+# END
+
+
+
+
+|                                                                                                            |                                   |
+| :--------------------------------------------------------------------------------------------------------- | :-------------------------------- |
+| &lt;a href="mailto:nikiforos.zampetakis@sciencespo.fr"&gt;.ScPored[&lt;i class="fa fa-paper-plane fa-fw"&gt;&lt;/i&gt;]               | nikiforos.zampetakis@sciencespo.fr       |
+| &lt;a href="https://github.com/ScPoEcon/Advanced-Metrics-slides"&gt;.ScPored[&lt;i class="fa fa-link fa-fw"&gt;&lt;/i&gt;] | Slides |
+| &lt;a href="https://scpoecon.github.io/ScPoEconometrics"&gt;.ScPored[&lt;i class="fa fa-link fa-fw"&gt;&lt;/i&gt;] | Book |
+| &lt;a href="http://twitter.com/ScPoEcon"&gt;.ScPored[&lt;i class="fa fa-twitter fa-fw"&gt;&lt;/i&gt;]                          | @ScPoEcon                         |
+| &lt;a href="http://github.com/ScPoEcon"&gt;.ScPored[&lt;i class="fa fa-github fa-fw"&gt;&lt;/i&gt;]                          | @ScPoEcon                       |
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="js/ru_xaringan.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

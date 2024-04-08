@@ -1,0 +1,458 @@
+---
+title: "ScPoEconometrics Advanced"
+subtitle: "Structural Models"
+author: "Nikiforos Zampetakis"
+date: "SciencesPo Paris </br> `r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: [default, "scpo.css", "scpo-fonts.css"]
+    nature:
+      beforeInit: ["js/ru_xaringan.js"]
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+    includes:
+      in_header: "C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/libs/partials/header.html"
+---
+
+layout: true
+
+<div class="my-footer"><img src="./img/logo/ScPo-shield.png" style="height: 60px;"/></div> 
+
+---
+
+```{r setup, include=FALSE,warning=FALSE,message=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(
+  message = FALSE,
+  warning = FALSE,
+  dev = "svg",
+  cache = TRUE,
+  fig.align = "center"
+  #fig.width = 11,
+  #fig.height = 5
+)
+
+# define vars
+library(tidyverse)
+library(magrittr)
+library(broom)
+library(fixest)
+library(modelsummary)
+
+```
+
+# Structural Models
+
+
+.pull-left[
+
+*Until Now*
+
+* Different methods to find causal effects (DiD, Panel, IV)
+
+* Recent applications of these methods to answer relevant (?) questions.
+
+]
+
+.pull-right[
+
+*Today*
+
+* Different way of finding causal effects + applications
+]
+
+<br>
+<br>
+
+To make this slide deck I have extensively used materials from [Attila Gyetvai](https://attilagyetvai.com/), [Philip Haile](https://sites.google.com/view/philhaile/home) and [Allan Collard-Wexler](https://sites.duke.edu/collardwexler/)
+
+---
+
+# Models are Everywhere
+
+* Arguments about causal effects depend on counterfactuals
+
+* **A model is necessary to define and explore counterfactuals of interest.**
+  * Without a model how should I know which are the other factors I have to keep fixed.
+  
+* In other disciplines where the construction of "formal" models is not a tradition they have invented new ones: Rubin Causal Model (statistics), DAG (computer science)
+
+* I think [Gauti Eggertsson](https://sites.google.com/site/gautieggertsson/home) in his [tweet](https://twitter.com/GautiEggertsson/status/1657580831861354496) explains the need for a model quite nice.
+
+.pull-left[
+
+```{r eggertsson1, echo=FALSE, out.width = '100%'}
+knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/11-structural/img/eggertsson1.png")
+```
+
+]
+
+.pull-right[
+
+```{r eggertsson2, echo=FALSE, out.width = '100%'}
+knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/11-structural/img/eggertsson2.png")
+```
+
+]
+
+* The model may be simple or complicated, may involve economics or only hypothesized probabilistic relationships **but it is always there!!**
+
+---
+
+# A Simple Labor Supply Model
+
+* **Research Question**: what is the effect of wages $w$ on hours worked $h$?
+
+* Imagine we observe data $(w_i, h_i)$ for $i \in \{1, \dots, N\}$ workers.
+
+* What is the simplest model that could explain this behavior?
+
+$$\max_{c,h} u(c,h) = c - \gamma h^{\alpha} \\
+s.t. \;\; c < hw$$
+
+* Taking the first order condition with respect to $h$ and $c$ we get
+
+$$h = (\gamma\alpha)^{\frac{1}{1-\alpha}}w^{\frac{1}{\alpha-1}}$$
+* Taking logs we get the **reduced form model**
+
+$$log(h) = \frac{1}{1-\alpha}log(\gamma\alpha) + \underbrace{\frac{1}{\alpha-1}}_\text{wage elasticity of labor supply} log(w)$$
+
+* I can't always get the structural parameters from the reduced form model.
+
+
+---
+
+# Program Evaluation Methods
+<br>
+
+* The set of methods called Program Evaluation methods (DiD, Randomized IV, RDD) follows the randomized control trial paradigm.
+<br>
+  * Trying to **abstract from a specific economic model** and get **causal effects through exploitation of the statistical properties** of an estimator.
+  * No economics in there.
+  
+<br>
+
+* But **models are always there**
+
+<br> 
+
+* Since the '10s **The Great Unification**
+  * Use rigorously a Program Evaluation method to properly identify and estimate a causal effect and then provide a parsimonious model that can explain the the economics behind the causal effect
+
+
+---
+
+# Why do Structural (Nevo and Whinston, 2010)?
+
+<br>
+
+## External Validity
+
+* External validity under the Policy Evaluation methods depends on many prior events where the policy or the change in the economic environment is exogenous (either through RCTs or quasi-random).
+
+<br>
+
+* Might not be the case: The change has never occurred before or not under the same conditions.
+
+<br>
+
+* Then structural analysis can match observed past behavior to a model and get the underlying parameters
+  * Then the model can be used to predict the responses to possibles changes even those that have never happened before assuming that the parameters don't change
+
+---
+
+# Why do Structural (Nevo and Whinston, 2010)?
+
+## Welfare
+
+* Even if I could predict the prices for a given policy I can't compare the welfare implications of the proposed policy.
+
+<br>
+
+
+* If we could see previous examples of people or firms choosing between "before" and "after" outcomes for a given policy then estimation of the full model isn't needed.
+
+<br>
+
+* Since we want to predict what are the welfare outcomes of a proposed policy we don't have the choices between "before" and "after"
+
+<br>
+
+* We can use observed "other" choices to estimate the full model and then use it to predict what are the welfare effects of the proposed policy.
+
+
+
+---
+
+# Analysis Based on Structural Model
+
+* We'll see how we build and estimate a structural model and how we can use it to formulate counterfactuals through an example.
+
+* Consider the problem faced by an antitrust authority (DOJ, FTC, EC AD) when there is a suspected cartel in a market.
+
+* The antitrust authority can request detailed data from the suspected firms but still proof of legal violation is not possible. Why?
+
+* A possible increase in prices during the suspected period can be the outcome of the cartel or of a negative cost shock.
+  * How do we disentangle the two?
+  
+* Today: compare the observed price - cost margins with the ones predicted by a model of competition.
+
+* In general: large literature on cartel detection (much more advanced math/metrics and computational skills needed).
+
+---
+
+# Why we go structural?
+
+* No market is similar to an other.
+
+<br>
+
+*  Retail gasoline market with luxury bags market? 
+
+<br>
+
+*  The luxury brand market today vs the luxury market 70 years ago?
+
+<br>
+
+* There are no good prior events to use as a control group. I need a structural model.
+
+<br>
+
+Let's build a simple model of a market.
+
+---
+
+# The Market
+
+* We will concentrate in the market for Over The Counter Painkillers in the US. (Data graciously provided by Allan Collard-Wexler)
+
+<br>
+
+* These are real data collected from 73 stores across the US for 48 weeks. We observe prices and sales for the three biggest brands in the US + the private label.
+
+<br>
+
+* First we need to think how the firms behave in this market.
+  * How do the consumers perceive the products? As complements or substitutes?
+  * Are they perfect or imperfect substitutes? Which characteristics would they make them imperfect substitutes?
+  * How firms decide their prices? (Cournot vs Bertrand)
+  
+* Let's see what we can get from the data
+
+---
+
+# Task 1: Data Exploration (1.5 Minutes)
+
+1. Load the data 
+
+```{r load_data, echo=T}
+
+otc = read_csv(url("https://raw.githubusercontent.com/nikizampetakis/Advanced-Metrics-slides/master/lectures/11-structural/otc_data_merged.csv"))
+
+```
+
+<br>
+
+2. skim the data. How many different `mg` types are there? Is there any other variable known to the consumers that could make them perceive the products as different?
+
+<br>
+
+3. Do different firms have different prices when they do not do discounts? for the same product type? between different types?
+
+---
+
+# The OTC painkiller Market in the US
+
+* We see that the firms sell pills with different quantities for the active substance which indicates that consumers value this differentiation.
+
+<br>
+
+* Supply of both 50 and 100 mg products by the private label might indicate that consumers have strong preferences over the different sizes.
+
+<br>
+
+* We see that **firms have different prices between each other for the same product** and between their own products.
+  * This is a key characteristic of a differentiated products **Nash-Bertrand pricing model** (Why?)
+  
+<br>
+
+* So driven by the data we will make the assumption that the firms follow a Nash-Bertrand model to set their prices.
+
+---
+
+# Nash-Bertrand
+
+* Each firm sells differentiated products and compete on prices.
+  * We assume that each product is a different segment in a firm and each segment tries to maximize its own profits.
+
+* Their cost function for a product $j$ is: $C_{jt} = c_{jt}q_{jt}$
+
+*Their profits in a period $t$, where $\mathbf{p}$ is a vector of all the prices in the market are:
+
+$$\pi_{jt} = (p_{jt} - c_{jt})q_{jt}(\mathbf{p})$$
+
+* The firm tries to find the price that will maximize its profits. Take the FOC.
+
+$$\frac{\partial \pi_{jt}}{\partial p_{jt}} = q_{jt}(\mathbf{p}) + \frac{\partial q_{jt}(\mathbf{p})}{\partial p_{jt}}(p_{jt} - c_{jt}) = 0$$
+
+* Doing the math (on the board) we get that the price-cost margin of the firm is:
+
+$$\frac{p_{jt} - c_{jt}}{p_{jt}} = -\frac{1}{\eta_{jj}}$$
+* $\eta_{jj}$ is the own price elasticity of demand. How can I get the price elasticity?
+
+---
+
+# Demand Model
+
+* I need a demand model to get the price elasticity.
+
+<br>
+
+* Berry, Levinshon and Pakes (1995) wrote the workhorse demand model for differentiated products.
+
+<br>
+
+* **Key assumption 1**: Each consumer chooses the bundle that maximizes her utility and buy only one product.
+
+---
+
+# Utility Function
+
+* There are $J$ products in the market with $J \in \{0, 1, \dots, J\}$
+  * 0 is the outside good.
+
+* Each consumer $i$ has a utility function of the form:
+
+$$U_{ij} = \delta_j + \epsilon_{ij}$$
+
+* $\delta_j$ is the mean utility of product $j$
+* $\epsilon_{ij}$ is an idiosyncratic taste for product $j$.
+
+* **Key assumption 2**: $\epsilon_{ij} \sim$ $Logit(\epsilon)$.
+
+---
+
+# Logit Assumption
+
+* Logit assumption is important because we can write the probability of a consumer to buy product $j$ as:
+
+$$Pr(U_{ij} \geq U_{ik} \; \forall \; k) = \frac{exp(\delta_j)}{\sum_{k = 0, 1, \dots, J} exp(\delta_j)}$$
+* Since each consumer buys only 1 product this $Prob$ corresponds to product's $j$ **market share** $s_j$ as well.
+  * **Important**: If I have a measure of the market size (how many potential consumers are in the market) **I can compute market shares from the data** $\frac{q_j}{M} = s_j$.
+
+* I can compute the share of the outside good $s_0$ as: $s_0 = 1 - \sum_{j \in \{{1\dots J}\}}s_j$.
+
+---
+
+# Mean Utility
+
+* **Key assumption 3**: $\delta_j$ takes the form
+
+$$\sum_l \beta_l x_{lj} - ap_j + \xi_j$$
+* $x_{lj}$: is the characteristic $l$ for product $j$.
+
+* $p_j$: is the price of product $j$.
+
+* $\xi_j$: is product quality as perceived by consumers unobserved by the econometrician.
+
+* **Key assumption 4**: $\delta_0 = 0$
+
+* Now I have all the components to estimate the parameters of the demand function.
+
+---
+
+# Berry inverssion
+
+* Quick reminder: $e^0 = 1$,  $log(\frac{a}{b}) = log(a) - log(b)$,  $log(1) = 0$
+
+Berry used these to rules to simplify the format of the demand function.
+
+$$s_j = \frac{exp(\sum_l \beta_l x_{lj} - ap_j + \xi_j)}{1 + \sum_{k = 1, \dots, J} exp(\sum_l \beta_l x_{lj} - ap_j + \xi_j)}$$
+$$s_0 = \frac{1}{1 + \sum_{k = 1, \dots, J} exp(\sum_l \beta_l x_{lj} - ap_j + \xi_j)}$$
+Taking logs (on te board) we get:
+
+$$log(sj) - log(s_0) = \sum_l \beta_l x_{lj} - ap_j + \xi_j$$
+
+* I know everything! **I can estimate this with OLS**.
+
+---
+
+# Price endogeneity
+
+* When firms set prices they take into consideration the unobserved quality component $\xi_j$ hence $\mathbb{E}[\xi_j|p_j] \neq 0$.
+  * Then $a$ will be a biased estimate.
+  
+* I need and instrument to fix that. What can I use as an instrument?
+
+--
+
+* Something that will shift prices but not how consumers perceive product quality.
+
+* Usual instruments: 
+  * Variation in cost components (cost shifters)
+  * Sums of competitors characteristics - BLP instruments (markup shifters)
+  * if we can use market fixed effects then spatially correlated cost shocks - Hausman-Nevo instruments.
+  
+* In our case (OTC market) we can use product and market fixed effects. Then our $\xi_{jmt}$ will be $\xi_{jmt} = \xi_{j} + \xi_{m} + \Delta\xi_{jmt}$.
+  * Then prices in other markets are correlated with the price in market $m$ because cost shocks are the same across space but uncorrelated with        $\Delta\xi_{jmt}$ since we have controled for market fixed effects.
+
+---
+
+# Task 2: Demand estimation (2 Minutes)
+
+1. Assuming each store is a  different market compute the market shares and the share of the outside good.
+  * **Hint**: `count` is number of customers entering a store $\rightarrow$ the market size.
+  
+2. compute `delta` as $log(s_j) - log(s_0)$.
+
+3. Run an OLS regression of `delta` on `price_`, `prom_` and `size`. Interpret the coefficients. Is there something peculiar?
+
+4. Create a `market_id` variable where market is defined as a unique store-week combination.
+  * **Hint**: use `cur_group_id()` to give a unique identifier to a group   .
+  
+5. Run the same regression with product (`brand_name`) and market fixed effects.
+
+6. Run a 2sls regression of `delta` on `price_`, `prom_` and `size` using as IV the variable `avoutprice` the average price in the other markets.
+
+7. Run the same 2sls regression with product (`brand_name`) and market fixed effects.
+
+8. compute the own price elasticity for each product using the formula $\hat{a}p_j(1 - s_j)$ using the price coefficient form the last regression.
+
+---
+
+# Task 3: Compare price cost margins (2 Minutes)
+
+1. Compute the price-cost margins `pcm` from the data using the variable `cost_`.
+
+<br>
+
+2. Compute the implied price - cost margins `pcm_b` from the Bertrand model we discussed before.
+  * **Hint**: the formula is $ \frac{1}{|\eta_{jj}|}$.
+  
+<br>
+
+3. Compute the average of `pcm` and `pcm_b` over the whole sample and by `brand_name`. What do you see? Can we reach a concmulsion about the competition in the market?
+
+---
+layout: false
+class: title-slide-final, middle
+background-image: url(../../img/logo/ScPo-econ.png)
+background-size: 250px
+background-position: 9% 19%
+
+# END
+
+
+
+
+|                                                                                                            |                                   |
+| :--------------------------------------------------------------------------------------------------------- | :-------------------------------- |
+| <a href="mailto:nikiforos.zampetakis@sciencespo.fr">.ScPored[<i class="fa fa-paper-plane fa-fw"></i>]               | nikiforos.zampetakis@sciencespo.fr       |
+| <a href="https://github.com/ScPoEcon/Advanced-Metrics-slides">.ScPored[<i class="fa fa-link fa-fw"></i>] | Slides |
+| <a href="https://scpoecon.github.io/ScPoEconometrics">.ScPored[<i class="fa fa-link fa-fw"></i>] | Book |
+| <a href="http://twitter.com/ScPoEcon">.ScPored[<i class="fa fa-twitter fa-fw"></i>]                          | @ScPoEcon                         |
+| <a href="http://github.com/ScPoEcon">.ScPored[<i class="fa fa-github fa-fw"></i>]                          | @ScPoEcon                       |

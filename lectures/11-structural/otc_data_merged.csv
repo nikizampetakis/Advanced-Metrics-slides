@@ -1,4 +1,4 @@
-"brand","store","week","sales_","count","price_","prom_","cost_","brand_name","size","avoutprice"
+"brand","store","week","sales_","count","price_","prom_","cost_","brand_name","mg","avoutprice"
 1,100,1,15,29262,3.34,0,2.12,"Tylenol 25",25,0.0036886
 1,100,10,26,30608,3.32,0,2.13,"Tylenol 25",25,0.0008572
 1,100,11,21,26464,3.34,0,2.16,"Tylenol 25",25,0.0028218
