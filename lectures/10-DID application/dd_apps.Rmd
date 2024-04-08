@@ -126,7 +126,14 @@ expanding literature has dived in to this problem.
 
 ---
 
+layout: false
+class: title-slide-section-red, middle
+
 # The Power of the Pill: Oral Contraceptives and Women’s Career and Marriage Decisions, Goldin and Katz (2002)
+
+---
+
+# The Power of the Pill Goldin and Katz (2002)
 
 <br>
 <br>
@@ -155,49 +162,478 @@ expanding literature has dived in to this problem.
 
 ---
 
-# The Outcome in Graphs
+# What we are after
 
 .pull-left[
 
-```{r bschool, echo=FALSE, out.width = '100%'}
+```{r bschool, echo=FALSE, out.width = '70%'}
 knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/10-DID application/img/first year female ratios.png")
+```
+
+```{r marriage, echo=FALSE, out.width = '70%'}
+knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/10-DID application/img/marriage age.png")
+```
+
+]
+
+.pull-right[
+<br>
+<br>
+
+```{r the pill, echo=FALSE, out.width = '100%'}
+knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/10-DID application/img/the pill.png")
+```
+
+]
+
+---
+
+# The Paper
+
+.pull-left[
+
+<br>
+
+* In the paper Goldin and Katz present different ways to support their argument.
+
+* Descriptive evidence a simple theoretical model, and an econometric analysis based on a TWFE DiD.
+
+* We will concentrate on the metrics part of their argument but the paper is of high standard in general.
+
+* They concentrate on post-graduate education (e.g. Medicine, MBA) because it requires extensive up-front education.
+
+]
+
+.pull-right[
+## Data
+
+* Various subsets of the US Census data
+
+* They use the US Census population census data from 1970, 1980, 1990.
+
+* They observe measures of:
+* Career and marital status outcomes
+* Access to the pill
+* Abortion when young
+* for single year of birth cohorts of college women
+
+]
+
+---
+
+# The DiD Strategy for Age of the First Marriage
+
+$$M_{isy} = \alpha_s + \delta_y + \beta X_{isy} + \gamma P_{sy}  + \pi A_{sy} + \epsilon_{isy}$$
+* $i$ indexes individuals; $s$ indexes state of birth; $y$ indexes year of birth.
+* $M_{isy}$: is a dummy variable equal to one if individual i was married before age 23;
+* $X_{isy}$: contains controls for race.
+* $P_{sy}$:  is a dummy variable equal to one if $i$’s state of birth had a non restrictive birth control law for minors at the time $i$ was 18 years old.
+* $A_{sy}$: is a dummy variable equal to one if abortion was legal in $i$’s state of birth at the time $i$ was 18 years old.
+* $\alpha_s$: state of birth dummies.
+* $\delta_y$: year of birth dummies.
+
+<br>
+<br>
+
+**Basic idea**: exploit the substantial cross-state variation in the timing of the enactment of impact of state laws regarding birth control access for minors on the likelihood of getting married before age23, for college-educated women born in the United States from 1935 to 1957.
+
+---
+
+#Regression Results
+
+
+
+```{r marr_regg1, echo=FALSE, out.width = '70%'}
+knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/10-DID application/img/marriage1.png")
+```
+
+```{r marr_regg2, echo=FALSE, out.width = '70%'}
+knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/10-DID application/img/marriage2.png")
+```
+
+---
+
+#The DiD strategy for Career and Marital Status Outcomes
+
+<br>
+<br>
+
+* Aggregate cohort analysis based on data from the 1970, 1980 and 1990 U.S. population censuses.
+
+
+* Unit of observation in the analysis is an age/year cell (or a year of birth /calendar year cell). 20 age
+groups (ages30–49) across 3 census years 70, 80 and 90.
+
+<br>
+
+
+* Actual pill usage $\rightarrow$ proxied by the fraction of college women in a cohort taking the pill before age 21 among those with no births before age 23.
+
+
+* Pill access $\rightarrow$ proxied by the fraction in a cohort born in a state with a non-restrictive birth control access law when they were younger than 21years
+
+---
+
+#The DiD strategy for Career and Marital Status Outcomes
+
+
+$$Y_{at} = \alpha_a + \delta_t + \beta X_{at} + \gamma P_{at}  + \pi A_{at} + \epsilon_{at}$$
+* $Y_{at}$: the share of age group $a$ experiencing a particular career or marital status outcome in year $t$;
+
+* $X_{at}$: contains controls for race.
+
+* $P_{at}$: measure of access to or usage of birth control for cohort members as young women.
+
+* $A_{at}$: a measure of access to or usage of abortion for cohort members as young women.
+
+<br>
+<br>
+
+**Basic idea**: to observe successive cohorts at the same age to examine whether between-cohort changes in career and marital status outcomes are related to between-cohort changes in access to the pill and abortion for young single women, controlling for preexisting trends in these outcomes across cohorts.
+
+---
+
+# Regression Results
+
+
+```{r carr_regg1, echo=FALSE, out.width = '70%'}
+knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/10-DID application/img/carrer1.png")
+```
+
+```{r carr_regg2, echo=FALSE, out.width = '70%'}
+knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/10-DID application/img/carrer2.png")
+```
+
+---
+
+
+layout: false
+class: title-slide-section-red, middle
+
+# Malaria Eradication in the Americas: A Retrospective Analysis of Childhood Exposure, Bleakley (2010)
+
+---
+
+# Bleakley (2010)
+
+.pull-left[
+
+* Malaria persists in tropical regions up to the present day.
+
+* Same areas lower level of development compared to countries in more tempered climates.
+
+* Question naturally arising: Does Malaria hold back economic progress? 
+]
+
+.pull-right[
+
+* Computing correlations not enough to answer the question.
+
+* Malaria might depress productivity but the failure to eradicate Malaria might be a symptom of underdevelopment (reverse causality).
+
+* Solution via metrics: exogenous variation to Malaria.
+
+* Setting: two major attempts of Malaria eradication South US (1920) and Brazil, Colombia and Mexico (1950s).
+
+]
+
+---
+
+# What we are after
+
+.pull-left[
+
+<br>
+<br>
+```{r mal_colom1, echo=FALSE, out.width = '100%'}
+knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/10-DID application/img/malaria colombia1.png")
 ```
 
 ]
 
 .pull-right[
 
-```{r marriage, echo=FALSE, out.width = '100%'}
-knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/10-DID application/img/marriage age.png")
+<br>
+<br>
+
+```{r mal_colom2, echo=FALSE, out.width = '100%'}
+knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/10-DID application/img/malaria colombia2.png")
 ```
 
 ]
 
- 
+---
+
+# The Paper
+
+.pull-left[
+
+* Malaria has acute symptoms (fever, headache and nausea) and chronic symptoms anemia.
+
+* This paper: long-term effects of childhood exposure to Malaria eradication campaigns on subsequent labor productivity as an adult.
+
+* **Key factor** for the analysis: the eradication **campaigns were exogenous to growth potential** of the affected regions.
+
+]
+
+.pull-right[
+
+* Variation in the Malaria intensity between regions in a given state (southern Mexico - norther Mexico, US south - US north, 
+  south Brazil - north Brazil and tierra caliente Colombia).
+  
+* Areas with high infection rates benefited more from the eradication campaign. 50 to 80 percent decrease after the campaigns.
+
+* Compare outcomes between different age groups at he time of the campaign (Adults - kids).
+
+]
+
+* **Data**: Integrated Public Use Micro Sample (IPUMS)
 
 ---
 
-# Randomization to the rescue
+# Dif-in-Diff Strategy
 
-If randomly assign who gets treated or not (e.g. by flipping a coin) people with high expected gains can not select to get treated.
-
-<br>
-<br>
-
-**NB**: The distrib. of $\delta_i$ is still the same in the study pop. $\implies$ there are still people with high and low effects.
+* Concentrate on males: consistent and higher labor-force participation.
 
 <br>
+
+* Labor productivity measured by: 
+average by occupation of all reported labor earnings
+weighted average of earnings and education among males within each occupation
+
 <br>
 
-Missing data problem solved!!
+* Combine data to construct panels by cohort and aggregate to year of birth $\times$ census year $\times$ place of birth.
 
-Whether $Y_i^1$ or $Y_i^0$ is observed for each $i$ is random and not a function of any factor that $i$ can act upon.
 
-$$\hat{\delta} = \delta^{ATE}$$
+$$Y_{j,Post} - Y_{j,pre} = \beta M_{j,pre} + X_{j,pre}\Gamma + \alpha + \epsilon_{j,post}$$
+<br>
+
+* Exactly the same as a TWFE with two periods.
 
 ---
 
+# Results US
 
+* Areas with higher malaria burdens prior to the eradication efforts saw larger cross-cohort growth rates in income.
+
+```{r mal_us, echo=FALSE, out.width = '60%'}
+knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/10-DID application/img/malaria US.png")
+```
+
+---
+
+# Results Mexico and Brazil
+
+.pull-left[
+
+```{r mal_c, echo=FALSE, out.width = '100%'}
+knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/10-DID application/img/malaria c.png")
+```
+
+]
+
+.pull-right[
+
+<br>
+
+```{r mal_mb, echo=FALSE, out.width = '100%'}
+knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/10-DID application/img/malaria mb.png")
+```
+
+]
+
+
+---
+
+layout: false
+class: title-slide-section-red, middle
+
+# Can Openness Mitigate the Effects of Weather Shocks? Evidence from India’s Famine Era, Burgess and Donaldson (2010)
+
+---
+
+# Burgess and Donaldson (2010)
+
+.pull-left[
+* Rural citizens in **developing countries** today are highly exposures to **weather fluctuations**.
+
+* This exposure can lead to **famines** 
+  * Acutely low nominal agricultural income
+  * Acutely high food prices.
+
+* Debate whether **trade openness** mitigates or exacerbates the weather socks.
+  * Since Adam Smith openness leads to less volatility in real incomes.
+  * Mahatma Gandhi and others support that openness increases the frequency of famines.
+  
+
+]
+
+.pull-right[
+
+* **Fundamental ambiguity**: income more volatile - consumer prices less volatile
+  * What is the net effect on income?
+
+* In the paper concentrate on colonial era (1875 - 1919) India.
+
+* Worst string of famines in history 
+
+* Also the period where the bulk of the railroad network was built.
+
+* **Research Question**: What is the effect of the railroad expansion on the mitigation of the weather shocks on famines?
+
+]
+
+---
+
+# The Paper
+
+.pull-left[
+<br>
+<br>
+```{r rf, echo=FALSE, out.width = '200%'}
+knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/10-DID application/img/rails famine.png")
+```
+]
+
+.pull-right[
+<br>
+<br>
+
+* $\frac{2}{3}$s of the population farmers - almost no irrigation system at the period ("gambling on monsoons).
+
+* They Gather data on famines at the district level between 1875 - 1919 - make an order variable (0-3).
+
+* Rainfall data and railroad data at the district level.
+
+]
+---
+
+# The Diff-in-Diff Strategy
+
+$$F^*_{dt} = \alpha_d + \beta_t + \gamma_1 RAIN_{dt} + \gamma_2 RAIL_{dt} + \gamma_3 RAIN_{dt} \times RAIL_{dt} + \epsilon_{dt}$$
+
+* $\alpha_d$: district fixed effect
+
+* $\beta_t$: year fixed effect
+
+* $RAIN_{dt}$: amount of local rainfall enjoyed by district $d$ in year $t$
+
+* $RAIL_{dt}$: dummy variable indicating whether district d has a railroad line in the district in year t or not
+
+* $F^*_{dt}$: famine intensity. Not observed use the ordered qualitative index instead.
+
+<br>
+
+* Estimate through fixed effect ordered logit model.
+
+<br>
+
+* did railroads mitigate ($\gamma_3>0$) or exacerbate ($\gamma_3<0$) the ill effects of a given rainfall shortage on famine intensity?
+
+---
+
+# Results
+
+```{r f_results, echo=FALSE, out.width = '100%'}
+knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/10-DID application/img/famine.png")
+```
+
+---
+
+layout: false
+class: title-slide-section-red, middle
+
+# Backlash: The Unintended Effects of Language Prohibition in U.S. Schools after World War I, Fouka (2020)
+
+---
+# Fouka (2020)
+
+.pull-left[
+
+* Multiple countries strive to **integrate ethnic minorities**.
+
+* Theories of nation building: imposing national language or **repressing minority culture increases homogeneity**.
+
+* Integration policies can lead to a backlash $\rightarrow$ **strengthen the ethnic identity**.
+
+* No empirical evidence whether this is true or not.
+
+]
+
+.pull-right[
+
+* In this paper concentrate on the **prohibition of German in US schools after WWI**.
+
+* How did affect the **first name choice** and the **intermarriage decisions** among the German community in the US?
+
+* How did affect their **patriotism** measured by their voluntary enlistment in the US Army during WWII?
+
+]
+
+---
+
+# The Paper
+
+#### Focus on Indiana and Ohio $\rightarrow$ legislation against the German language.
+
+* Control group all the bordering states (Michigan, Kentucky, Illinois, W.Virginia and Pennsylvania)
+  * No banning or English as the mandatory language in public schools.
+
+#### Create index of German name distinctiveness (German Name Index) (0 - 100)
+  * How much more frequent a name is among the population of German origin compared with the rest of the population.
+
+#### Intermarriage difficult to measure from the censuses. 
+  * In the 40s census only 5% asked their parental birthplaces.
+  * In the 30s treatment group to young to be married (14 - 27)/
+  * Still unbiased estimates but not representative to the whole population.
+  
+#### WWII enlistment
+  * Match the enlistment data to the census data for volunteers between 1940 - 1942
+
+---
+
+# The Diff-in-Diff Strategy
+
+#### Main strategy is based on comparing cohorts of school age with older cohorts between states with and without a language Law.
+
+$$Y_{isc} = \alpha + \beta T_{cs} + \lambda_c + \theta_s + \delta \mathbf{Z}_{isc} + \epsilon_{isc}$$
+<br>
+<br>
+
+* $T_{cs}$ is an indicator for individuals living in a state with a law and who were within the age range for compulsory schooling (CSL) at the time that law was in place.
+
+* $\lambda_c$ and $\theta_s$: cohort and state fixed effects
+
+* $\mathbf{Z}_{isc}$: vector of name properties that affect the probability of a record being matched in a later census
+
+---
+
+# Results
+
+```{r ger_gni, echo=FALSE, out.width = '100%'}
+knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/10-DID application/img/gni density.png")
+```
+
+---
+
+# Results
+
+
+```{r ger_results, echo=FALSE, out.width = '70%'}
+knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/10-DID application/img/german results.png")
+```
+
+---
+
+# Results
+
+```{r ger_results2, echo=FALSE, out.width = '100%'}
+knitr::include_graphics("C:/Users/nikzm/Documents/GitHub/Advanced-Metrics-slides/lectures/10-DID application/img/enlist results.png")
+```
+
+
+---
 layout: false
 class: title-slide-final, middle
 background-image: url(../../img/logo/ScPo-econ.png)
